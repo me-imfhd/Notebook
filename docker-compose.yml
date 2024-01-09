@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:latest
+    ports:
+      - 5432:5432
+    restart: always
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev
+      POSTGRES_DB: notebook
+    volumes:
+      - db:/var/lib/postgresql/data
+
+  # web:
+  #   env_file: .env
+  #   container_name: web
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/web/Dockerfile
+  #   restart: always
+  #   expose:
+  #     - 3000
+  #   ports:
+  #     - 3000:3000
+
+  # dashboard:
+  #   env_file: .env
+  #   container_name: dashboard
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/dashboard/Dockerfile
+  #   restart: always
+  #   expose:
+  #     - 3001
+  #   ports:
+  #     - 3001:3001
+
+# Define a network, which allows containers to communicate
+# with each other, by using their container name as a hostname
+volumes:
+  db:
+    driver: local

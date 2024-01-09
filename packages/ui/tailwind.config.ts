@@ -1,0 +1,1 @@
+module.exports = require("@notebook/tailwind-config/index");
