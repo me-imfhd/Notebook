@@ -17,6 +17,8 @@ export const metadata: Metadata = {
 };
 // You might be wonder where is session provider for next-auth, well we necessarily don't need it in app router
 export default function RootLayout({ children }: PropsWithChildren) {
+  const myHeaders = new Headers();
+  myHeaders.set("Notion-Version", " 2022-06-28");
   return (
     <html lang="en" suppressHydrationWarning>
       <body
