@@ -43,6 +43,10 @@ const nextConfig = {
     ];
   },
   webpack: (config, { isServer }) => {
+    config.module.rules.push({
+      test: /\.md$/,
+      use: "raw-loader",
+    });
     if (!isServer) {
       config.resolve = {
         ...config.resolve,

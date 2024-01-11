@@ -6,9 +6,6 @@ import React from "react";
 export default function DocsLayout({ children }: React.PropsWithChildren) {
   return (
     <div className="flex min-h-screen flex-col">
-      <SiteHeader>
-        <ProfileHeader />
-      </SiteHeader>
       <div className="container flex-1 items-start ">{children}</div>
     </div>
   );

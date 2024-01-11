@@ -1,6 +1,9 @@
 import { type PageId } from "@notebook/db/schema/notion";
 import { Client } from "@notionhq/client";
 import { BlockObjectResponse } from "@notionhq/client/build/src/api-endpoints";
+import fs from "fs";
+import path from "path";
+import { NotionToMarkdown } from "notion-to-md";
 
 export { type GetPageResponse } from "@notionhq/client/build/src/api-endpoints";
 export type NotionClientType = InstanceType<typeof Client>;
@@ -10,9 +13,25 @@ export const getBlockListResults = async (
   client: NotionClientType
 ) => {
   try {
-    const response = await client.blocks.children.list({ block_id: id });
-    // console.log(JSON.stringify(,null,2));
-    return response.results as BlockObjectResponse[];
+    const n2m = new NotionToMarkdown({ notionClient: client });
+
+    const mdblocks = await n2m.pageToMarkdown(
+      "6c14976996a44188b29b5c016fc16c72"
+    );
+    const mdString = n2m.toMarkdownString(mdblocks);
+
+    // console.log(mdString.parent);
+    // mdString.parent &&
+    //   (await fs.promises.writeFile(
+    //     path.join(process.cwd(), "./output.md"),
+    //     mdString.parent
+    //   ));
+
+    return mdString.parent;
+
+    // const response = await client.blocks.children.list({ block_id: id });
+    // // console.log(JSON.stringify(,null,2));
+    // return response.results as BlockObjectResponse[];
   } catch (err) {
     throw new Error((err as Error).message ?? "Error, ");
   }

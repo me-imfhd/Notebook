@@ -1,25 +1,35 @@
 "use client";
 import { trpc } from "@notebook/trpc/trpc/client";
-import { Shell, Skeleton } from "@notebook/ui/components";
-import { useRef } from "react";
+import { Markdown, Shell, Skeleton } from "@notebook/ui/components";
+import { useEffect, useRef, useState } from "react";
+import ReactMarkdown from "react-markdown";
+import rehypeRaw from "rehype-raw";
+import rehypeHighlight from "rehype-highlight";
+import second from "remark-toc";
 
 export default function Page() {
-  const { data: respData, isLoading } = trpc.notion.getSimpleBlocks.useQuery(
-    "dd3ccda0f5fd4bee8b545cf6451dcf17"
+  const data = useRef<string>();
+  const { data: resp, isLoading } = trpc.notion.getPageResponse.useQuery(
+    "72339b5b811b4865a90a81ea359028a0"
   );
+  resp ? (data.current = resp) : null;
+  // const [content, setContent] = useState("");
 
-  const data = respData;
-
-  console.log(data);
+  // useEffect(() => {
+  //   fetch("../../output.md")
+  //     .then((res) => res.text())
+  //     .then((text) => setContent(text));
+  // }, []);
+  // data.current = resp;
   return (
     <Shell
       as={"div"}
       className="flex flex-col text-white place-items-center justify-center"
     >
-      {isLoading ? (
+      {isLoading || !data.current ? (
         <Skeleton className="bg-muted w-full h-[100vh] "></Skeleton>
       ) : (
-        <span className="text-wrap w-46">{data}</span>
+        <Markdown className="p-2">{data.current}</Markdown>
       )}
     </Shell>
   );

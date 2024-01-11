@@ -42,8 +42,8 @@ export const notionRouter = createTRPCRouter({
     .query(async ({ input }) => {
       try {
         const listResults = await getBlockListResults(input, client);
-        const res = await getBlocksContent(listResults, client);
-        return res;
+        // const res = await getBlocksContent(listResults, client);
+        return listResults;
       } catch (err) {
         throw new TRPCError({
           code: "INTERNAL_SERVER_ERROR",
