@@ -7,6 +7,7 @@
   "packageManager": "pnpm@8.7.5",
   "scripts": {
     "build": "turbo run build",
+    "start": "cd apps/web && pnpm start",
     "clean": "git clean -xdf node_modules",
     "clean:workspaces": "turbo clean",
     "db:generate": "turbo db:generate",

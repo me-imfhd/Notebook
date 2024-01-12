@@ -13,20 +13,20 @@ services:
     volumes:
       - db:/var/lib/postgresql/data
 
-  web:
-    env_file: .env
-    container_name: web
-    build:
-      context: .
-      dockerfile: ./apps/web/Dockerfile
-    restart: always
-    expose:
-      - 3000
-    ports:
-      - 3000:3000
+  # web:
+  #   env_file: .env
+  #   container_name: web
+  #   build:
+  #     context: .
+  #     dockerfile: ./apps/web/Dockerfile
+  #   restart: always
+  #   expose:
+  #     - 3000
+  #   ports:
+  #     - 3000:3000
 
   backend:
-    build: ./apps/web/Dockerfile
+    build: ./apps/application
     environment:
       - API_KEY=$API_KEY
       - EMBEDDINGS_KEY=$API_KEY
@@ -45,24 +45,24 @@ services:
       - mongo
 
   worker:
-  build: ./apps/web/Dockerfile
-  command: celery -A application.app.celery worker -l INFO
-  environment:
-    - API_KEY=$API_KEY
-    - EMBEDDINGS_KEY=$API_KEY
-    - LLM_NAME=$LLM_NAME
-    - CELERY_BROKER_URL=redis://redis:6379/0
-    - CELERY_RESULT_BACKEND=redis://redis:6379/1
-    - MONGO_URI=mongodb://mongo:27017/docsgpt
-    - API_URL=http://backend:7091
-  depends_on:
-    - redis
-    - mongo
+    build: ./apps/application
+    command: celery -A application.app.celery worker -l INFO
+    environment:
+      - API_KEY=$API_KEY
+      - EMBEDDINGS_KEY=$API_KEY
+      - LLM_NAME=$LLM_NAME
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/1
+      - MONGO_URI=mongodb://mongo:27017/docsgpt
+      - API_URL=http://backend:7091
+    depends_on:
+      - redis
+      - mongo
 
   redis:
-  image: redis:6-alpine
-  ports:
-    - 6379:6379
+    image: redis:6-alpine
+    ports:
+      - 6379:6379
 
   mongo:
     image: mongo:6

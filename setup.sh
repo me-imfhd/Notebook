@@ -76,13 +76,13 @@ use_openai() {
     echo "VITE_API_STREAMING=true" >> .env
     echo "The .env file has been created with API_KEY set to your provided key."
 
-    docker-compose build && docker-compose up -d
-
-
+    docker compose build && docker compose up -d
+    pnpm build
+    pnpm start
 
     echo "The application will run on http://localhost:5173"
     echo "You can stop the application by running the following command:"
-    echo "docker-compose down"
+    echo "docker compose down"
 }
 
 use_docsgpt() {
