@@ -14,9 +14,9 @@ export type NotionClientType = InstanceType<typeof Client>;
 export type N2MType = InstanceType<typeof NotionToMarkdown>;
 type getBlockListResultsType = {
   id: PageId;
-  mdblocks: MdBlock[];
+  mdBlocks: MdBlock[];
   client: NotionClientType;
-  pageName: string;
+  pageName: string[];
   n2m: N2MType;
 };
 let folderpath = "";
@@ -24,18 +24,12 @@ export async function getBlockListResults({
   pageName,
   client,
   id,
-  mdblocks,
+  mdBlocks,
   n2m,
 }: getBlockListResultsType) {
   try {
-    const content = getMarkdownContent(mdblocks, n2m); // makes string to feed in mdx file
-    generateFileAndFolder({ content, pageName }); // generates folder with name as pageName and file as index.mdx
-    // const childPages = filterChildPages(mdblocks);
-    // if (childPages.length > 0) {
-    //   n2m.
-    // }
-
-    return content;
+    await recursiveFn({ mdBlocks, n2m, pageName });
+    return "hello";
   } catch (err) {
     throw new Error((err as Error).message ?? "Error, ");
   }
@@ -45,15 +39,40 @@ function filterChildPages(array: MdBlock[]) {
   return array.filter((item) => item.type === "child_page");
 }
 
+type recursiveFnType = {
+  mdBlocks: MdBlock[];
+  n2m: NotionToMarkdown;
+  pageName: string[];
+};
+async function recursiveFn({ mdBlocks, n2m, pageName }: recursiveFnType) {
+  const content = getMarkdownContent(mdBlocks, n2m); // makes string to feed in mdx file
+  generateFileAndFolder({ content, pageName }); // generates folder with name as pageName and file as index.mdx
+  const childPagesMdBlocks = filterChildPages(mdBlocks);
+  if (childPagesMdBlocks.length === 0) {
+    return;
+  }
+  for (const childPageMdBlock of childPagesMdBlocks) {
+    if (childPageMdBlock) {
+      pageName.push(childPageMdBlock.parent.trim());
+      await recursiveFn({
+        mdBlocks: childPageMdBlock.children,
+        n2m,
+        pageName,
+      });
+      pageName.pop();
+    }
+  }
+}
+
 type generateFileAndFolderType = {
   content?: string;
-  pageName: string;
+  pageName: string[];
 };
 async function generateFileAndFolder({
   content,
   pageName,
 }: generateFileAndFolderType) {
-  const dir = pageName.split(" ").join("-");
+  const dir = pageName.join("/").split(" ").join("-");
   try {
     await fs.promises.mkdir(path.join(process.cwd(), `./pages/${dir}`), {
       recursive: true,

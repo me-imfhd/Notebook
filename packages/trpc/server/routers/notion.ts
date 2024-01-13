@@ -24,16 +24,16 @@ export const notionRouter = createTRPCRouter({
             separateChildPage: true,
           },
         });
+
         const { results: notionBlockList } = await client.blocks.children.list({
           block_id: input.pageId,
         });
-        const mdblocks = await n2m.blocksToMarkdown(notionBlockList);
-
+        const mdBlocks = await n2m.blocksToMarkdown(notionBlockList);
         const res = await getBlockListResults({
           id: input.pageId,
           client,
-          pageName: "Things to do",
-          mdblocks,
+          pageName: ["Things to do"],
+          mdBlocks,
           n2m,
         });
         console.log(res);
