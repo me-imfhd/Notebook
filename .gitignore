@@ -215,3 +215,5 @@ node_modules/
 models/
 
 *.mdx
+
+_meta.json

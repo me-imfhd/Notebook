@@ -74,7 +74,7 @@ async function generateFileAndFolder({
 }: generateFileAndFolderType) {
   const dir = pageName.join("/").split(" ").join("-");
   try {
-    await fs.promises.mkdir(path.join(process.cwd(), `./pages/${dir}`), {
+    await fs.promises.mkdir(path.join(process.cwd(), `./pages/docs/${dir}`), {
       recursive: true,
     });
   } catch (err) {
@@ -83,7 +83,7 @@ async function generateFileAndFolder({
 
   content &&
     (await fs.promises.writeFile(
-      path.join(process.cwd(), `./pages/${dir}/index.mdx`),
+      path.join(process.cwd(), `./pages/docs/${dir}/index.mdx`),
       content
     ));
 }
