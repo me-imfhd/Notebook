@@ -4,6 +4,8 @@ echo "DATABASE_URL=postgresql://dev:dev@localhost:5432/notebook?schema=public" >
 echo "# when in production set NEXTAUTH_URL to your actual domain " >> .env
 echo "NEXTAUTH_URL=http://localhost:3000" >> .env
 echo "NEXTAUTH_SECRET=ULMiwT6Tz9cyW5AtIisLmY9H3gS5sfKzUCdc6w47hq0=" >> .env
+read -p "Please enter your NOTION_INTEGRATION_TOKEN API key: " NOTION_INTEGRATION_TOKEN
+echo "NOTION_INTEGRATION_TOKEN=$NOTION_INTEGRATION_TOKEN" >> .env
 read -p "Please enter your GOOGLE_CLIENT_ID API key: " GOOGLE_CLIENT_ID
 echo "GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID" >> .env
 read -p "Please enter your GOOGLE_CLIENT_SECRET API key: " GOOGLE_CLIENT_SECRET
