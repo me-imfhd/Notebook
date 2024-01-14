@@ -72,26 +72,21 @@ async function generateFileAndFolder({
   content,
   pageName,
 }: generateFileAndFolderType) {
-  const dir = pageName.join("/").split(" ").join("-");
-  try {
-    await fs.promises.mkdir(path.join(process.cwd(), `./pages/docs/${dir}`), {
-      recursive: true,
-    });
-  } catch (err) {
-    console.error(`Error creating directory ${err}`);
-  }
-
-  content &&
-    (await fs.promises.writeFile(
-      path.join(process.cwd(), `./pages/docs/${dir}/index.mdx`),
-      content
-    ));
+  const dir = pageName.join("/").split(" ").join("-").replace(/[^\w\-\.~:\/@]/g, '');;
+  await fs.promises.mkdir(path.join(process.cwd(), `./pages/docs/${dir}`), {
+    recursive: true,
+  });
+  await fs.promises.writeFile(
+    path.join(process.cwd(), `./pages/docs/${dir}.mdx`),
+    content ? content : " "
+  );
 }
 
 function getMarkdownContent(mdblocks: MdBlock[], n2m: NotionToMarkdown) {
   const mdString = n2m.toMarkdownString(mdblocks);
+  console.log(mdString);
   if (mdString.parent) {
     return mdString.parent;
   }
-  throw new Error("content mdString.parent undefined");
+  return undefined;
 }
