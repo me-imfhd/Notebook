@@ -15,7 +15,7 @@ export const notionRouter = createTRPCRouter({
       },
     })
     .input(z.object({ pageId: z.string() }))
-    .output(z.string())
+    .output(z.object({ msg: z.string() }))
     .query(async ({ input }) => {
       try {
         const n2m = new NotionToMarkdown({
@@ -30,14 +30,10 @@ export const notionRouter = createTRPCRouter({
         });
         const mdBlocks = await n2m.blocksToMarkdown(notionBlockList);
         const res = await getBlockListResults({
-          id: input.pageId,
-          client,
-          pageName: ["Things to do"],
+          pageName: [],
           mdBlocks,
           n2m,
         });
-        console.log(res);
-        // console.log(res["Become a Visionary Leader, One Step at a "]);
 
         return res;
       } catch (err) {

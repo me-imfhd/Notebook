@@ -1,10 +1,6 @@
 import { useRouter } from "next/router";
-import { NextraConfig } from "nextra";
 import { DocsThemeConfig, useConfig } from "nextra-theme-docs";
 
-interface Props {
-  title: string;
-}
 const theme: DocsThemeConfig = {
   project: {
     link: "https://github.com/me-imfhd/Notebook",
@@ -52,14 +48,19 @@ const theme: DocsThemeConfig = {
       `}</style>
     </>
   ),
+  docsRepositoryBase: "https://github.com/me-imfhd/notebook/tree/main/apps/web",
   useNextSeoProps() {
-    return {
-      titleTemplate: "%s – Notebook",
-    };
+    const { asPath } = useRouter();
+    if (asPath !== "/") {
+      return {
+        titleTemplate: "%s – Notebook",
+      };
+    }
+    return;
   },
   head: () => {
     const { asPath, defaultLocale, locale } = useRouter();
-    const { frontMatter } = useConfig();
+    const { title } = useConfig();
     const url =
       "https://my-app.com" +
       (defaultLocale === locale ? asPath : `/${locale}${asPath}`);
@@ -67,10 +68,13 @@ const theme: DocsThemeConfig = {
     return (
       <>
         <meta property="og:url" content={url} />
-        <meta property="og:title" content={frontMatter.title || "Nextra"} />
+        <meta
+          property="og:title"
+          content={title ? title + " – Notebook" : "Notebook"}
+        />
         <meta
           property="og:description"
-          content={frontMatter.description || "The next site builder"}
+          content={"Make documentations with Notion & Nextra."}
         />
       </>
     );

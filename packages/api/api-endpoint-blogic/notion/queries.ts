@@ -4,32 +4,23 @@ import { NotionToMarkdown } from "notion-to-md";
 import { MdBlock } from "notion-to-md/build/types";
 import fs from "fs";
 import path from "path";
-import {
-  BlockObjectResponse,
-  PartialBlockObjectResponse,
-} from "@notionhq/client/build/src/api-endpoints";
 
 export { type GetPageResponse } from "@notionhq/client/build/src/api-endpoints";
 export type NotionClientType = InstanceType<typeof Client>;
 export type N2MType = InstanceType<typeof NotionToMarkdown>;
 type getBlockListResultsType = {
-  id: PageId;
   mdBlocks: MdBlock[];
-  client: NotionClientType;
   pageName: string[];
   n2m: N2MType;
 };
-let folderpath = "";
 export async function getBlockListResults({
   pageName,
-  client,
-  id,
   mdBlocks,
   n2m,
 }: getBlockListResultsType) {
   try {
-    await recursiveFn({ mdBlocks, n2m, pageName });
-    return "hello";
+    await recursiveFn({ mdBlocks, n2m, pageName, flag: false }); // first call
+    return { msg: "docs generated successfully" };
   } catch (err) {
     throw new Error((err as Error).message ?? "Error, ");
   }
@@ -43,10 +34,11 @@ type recursiveFnType = {
   mdBlocks: MdBlock[];
   n2m: NotionToMarkdown;
   pageName: string[];
+  flag: boolean;
 };
-async function recursiveFn({ mdBlocks, n2m, pageName }: recursiveFnType) {
+async function recursiveFn({ mdBlocks, n2m, pageName, flag }: recursiveFnType) {
   const content = getMarkdownContent(mdBlocks, n2m); // makes string to feed in mdx file
-  generateFileAndFolder({ content, pageName }); // generates folder with name as pageName and file as index.mdx
+  generateFileAndFolder({ content, pageName, flag }); // generates folder with name as pageName and file as index.mdx
   const childPagesMdBlocks = filterChildPages(mdBlocks);
   if (childPagesMdBlocks.length === 0) {
     return;
@@ -58,6 +50,7 @@ async function recursiveFn({ mdBlocks, n2m, pageName }: recursiveFnType) {
         mdBlocks: childPageMdBlock.children,
         n2m,
         pageName,
+        flag: true,
       });
       pageName.pop();
     }
@@ -67,18 +60,31 @@ async function recursiveFn({ mdBlocks, n2m, pageName }: recursiveFnType) {
 type generateFileAndFolderType = {
   content?: string;
   pageName: string[];
+  flag: boolean;
 };
 async function generateFileAndFolder({
   content,
   pageName,
+  flag,
 }: generateFileAndFolderType) {
-  const dir = pageName.join("/").split(" ").join("-").replace(/[^\w\-\.~:\/@]/g, '');;
+  if (!flag) {
+    await fs.promises.writeFile(
+      path.join(process.cwd(), `./pages/docs/index.mdx`),
+      content ? content : ""
+    );
+    return;
+  }
+  const dir = pageName
+    .join("/")
+    .split(" ")
+    .join("-")
+    .replace(/[^\w\-\.~:\/@]/g, "");
   await fs.promises.mkdir(path.join(process.cwd(), `./pages/docs/${dir}`), {
     recursive: true,
   });
   await fs.promises.writeFile(
     path.join(process.cwd(), `./pages/docs/${dir}.mdx`),
-    content ? content : " "
+    content ? content : ""
   );
 }
 
