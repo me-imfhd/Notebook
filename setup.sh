@@ -4,9 +4,11 @@ echo "DATABASE_URL=postgresql://dev:dev@localhost:5432/notebook?schema=public" >
 echo "# when in production set NEXTAUTH_URL to your actual domain " >> .env
 echo "NEXTAUTH_URL=http://localhost:3000" >> .env
 echo "NEXTAUTH_SECRET=ULMiwT6Tz9cyW5AtIisLmY9H3gS5sfKzUCdc6w47hq0=" >> .env
-read -p "Please enter your NOTION_INTEGRATION_TOKEN API key (press enter to skip): " NOTION_INTEGRATION_TOKEN
+
+read -p "Please enter your NOTION_INTEGRATION_TOKEN API key (required): " NOTION_INTEGRATION_TOKEN
 echo "NOTION_INTEGRATION_TOKEN=$NOTION_INTEGRATION_TOKEN" >> .env
-read -p "Please enter your NOTION_PAGE_ID API key (press enter to skip): " NOTION_PAGE_ID
+
+read -p "Please enter your NOTION_PAGE_ID with integration app connected (required): " NOTION_PAGE_ID
 echo "NOTION_PAGE_ID=$NOTION_PAGE_ID" >> .env
 
 read -p "Please enter your GOOGLE_CLIENT_ID API key (press enter to skip): " GOOGLE_CLIENT_ID
@@ -81,7 +83,6 @@ use_openai() {
     echo "VITE_API_STREAMING=true" >> .env
     echo "The .env file has been created with API_KEY set to your provided key."
 
-    docker compose build && docker compose up -d
     cd apps/web && pnpm dev
 
     echo "The application will run on http://localhost:3000"
