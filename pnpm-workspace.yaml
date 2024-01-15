@@ -1,5 +1,5 @@
 packages:
   - "apps/web"
-  - "apps/application"
+  - "application"
   - "packages/*"
   - "tooling/*"

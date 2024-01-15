@@ -26,7 +26,7 @@ services:
   #     - 3000:3000
 
   backend:
-    build: ./apps/application
+    build: ./application
     environment:
       - API_KEY=$API_KEY
       - EMBEDDINGS_KEY=$API_KEY
@@ -45,7 +45,7 @@ services:
       - mongo
 
   worker:
-    build: ./apps/application
+    build: ./application
     command: celery -A application.app.celery worker -l INFO
     environment:
       - API_KEY=$API_KEY
