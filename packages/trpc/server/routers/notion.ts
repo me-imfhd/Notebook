@@ -6,7 +6,7 @@ import { client } from "../..";
 import { NotionToMarkdown } from "notion-to-md";
 
 export const notionRouter = createTRPCRouter({
-  getPageResponse: publicProcedure
+  notionToNextra: publicProcedure
     .meta({
       /* 👉 */ openapi: {
         method: "GET",
@@ -29,6 +29,7 @@ export const notionRouter = createTRPCRouter({
           block_id: input.pageId,
         });
         const mdBlocks = await n2m.blocksToMarkdown(notionBlockList);
+        console.log(mdBlocks);
         const res = await getBlockListResults({
           pageName: [],
           mdBlocks,

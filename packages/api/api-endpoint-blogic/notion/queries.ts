@@ -1,11 +1,9 @@
-import { type PageId } from "@notebook/db/schema/notion";
 import { Client } from "@notionhq/client";
 import { NotionToMarkdown } from "notion-to-md";
 import { MdBlock } from "notion-to-md/build/types";
 import fs from "fs";
 import path from "path";
 
-export { type GetPageResponse } from "@notionhq/client/build/src/api-endpoints";
 export type NotionClientType = InstanceType<typeof Client>;
 export type N2MType = InstanceType<typeof NotionToMarkdown>;
 type getBlockListResultsType = {
@@ -20,7 +18,7 @@ export async function getBlockListResults({
 }: getBlockListResultsType) {
   try {
     await recursiveFn({ mdBlocks, n2m, pageName, flag: false }); // first call
-    return { msg: "docs generated successfully" };
+    return { msg: "Docs Generated Successfully" };
   } catch (err) {
     throw new Error((err as Error).message ?? "Error, ");
   }

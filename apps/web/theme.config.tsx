@@ -90,7 +90,7 @@ const theme: DocsThemeConfig = {
       }
       return <>{title}</>;
     },
-    defaultMenuCollapseLevel: 1,
+    defaultMenuCollapseLevel: 2,
     toggleButton: true,
   },
   footer: { text: `${new Date().getFullYear()} © Fahad` },

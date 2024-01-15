@@ -8,6 +8,10 @@ import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 **/
 import type { AppRouter } from "./server/routers/_app";
 import { Client } from "@notionhq/client";
+
+if (!process.env.NOTION_INTEGRATION_TOKEN) {
+    throw new Error("Please correctly set your NOTION_INTEGRATION_TOKEN in your .env");
+}
 export const client = new Client({ auth: process.env.NOTION_INTEGRATION_TOKEN });
 export type RouterInputs = inferRouterInputs<AppRouter>;
 

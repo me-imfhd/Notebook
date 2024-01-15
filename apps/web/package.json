@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
+    "dev": "dotenv -e ../../.env next dev",
+    "build": "dotenv -e ../../.env next build",
+    "start": "dotenv -e ../../.env next start",
     "lint": "next lint"
   },
   "dependencies": {
@@ -23,6 +23,7 @@
     "@types/react-syntax-highlighter": "^15.5.11",
     "autoprefixer": "^10.4.16",
     "clsx": "^2.0.0",
+    "dotenv-cli": "^7.2.1",
     "next": "14.0.1",
     "next-themes": "^0.2.1",
     "nextra": "^2.13.2",
