@@ -3,7 +3,7 @@ import { DocsThemeConfig, useConfig } from "nextra-theme-docs";
 
 const theme: DocsThemeConfig = {
   project: {
-    link: "https://github.com/me-imfhd/Notebook",
+    link: "https://github.com/100XEnginners/100xnotebook",
   },
   logo: () => (
     <>
@@ -24,7 +24,7 @@ const theme: DocsThemeConfig = {
             strokeWidth="2"
           />
         </svg>
-        <h1 style={{ fontSize: "24px", fontWeight: "500" }}>Notebook</h1>
+        <h1 style={{ fontSize: "24px", fontWeight: "500" }}>100XNotebook</h1>
       </span>
       <style jsx>{`
         .parent svg,
@@ -48,12 +48,12 @@ const theme: DocsThemeConfig = {
       `}</style>
     </>
   ),
-  docsRepositoryBase: "https://github.com/me-imfhd/notebook/tree/main/apps/web",
+  docsRepositoryBase: "https://github.com/100XEnginners/100xnotebook/tree/main/apps/web",
   useNextSeoProps() {
     const { asPath } = useRouter();
     if (asPath !== "/") {
       return {
-        titleTemplate: "%s – Notebook",
+        titleTemplate: "%s – 100XNotebook",
       };
     }
     return;
@@ -62,7 +62,7 @@ const theme: DocsThemeConfig = {
     const { asPath, defaultLocale, locale } = useRouter();
     const { title } = useConfig();
     const url =
-      "https://my-app.com" +
+      "https://100xnotebook.vercel.app" +
       (defaultLocale === locale ? asPath : `/${locale}${asPath}`);
 
     return (
@@ -70,11 +70,11 @@ const theme: DocsThemeConfig = {
         <meta property="og:url" content={url} />
         <meta
           property="og:title"
-          content={title ? title + " – Notebook" : "Notebook"}
+          content={title ? title + " – 100XNotebook" : "100XNotebook"}
         />
         <meta
           property="og:description"
-          content={"Make documentations with Notion & Nextra."}
+          content={"100xdevs Notebook."}
         />
       </>
     );
