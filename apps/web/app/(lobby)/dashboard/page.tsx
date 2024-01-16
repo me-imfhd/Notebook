@@ -2,16 +2,17 @@
 import { trpc } from "@notebook/trpc/trpc/client";
 import { Button, Shell, Skeleton, useToast } from "@notebook/ui/components";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
-import { useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 export default function IndexPage() {
+  // if (process.env.NEXT_PUBLIC_VERCEL_ENV || process.env.VERCEL_ENV) {
+  //   return <div>Dashboard is not accessible in production yet.</div>;
+  // }
   if (!process.env.NEXT_PUBLIC_NOTION_PAGE_ID) {
     throw new Error(
       "Please correctly set your NEXT_PUBLIC_NOTION_PAGE_ID in your .env"
     );
   }
-  const router = useRouter();
   const { toast } = useToast();
   const pageId = process.env.NEXT_PUBLIC_NOTION_PAGE_ID;
   const [isLoading, setIsLoading] = useState(false);
@@ -21,30 +22,22 @@ export default function IndexPage() {
       { enabled: false, trpc: { abortOnUnmount: true } }
     ),
   ]);
-  const utils = trpc.useUtils();
 
   const refetchData = async () => {
     setIsLoading(true);
     await queryInfo[0].refetch();
     setIsLoading(false);
   };
-  const cancelQuery = async () => {
-    utils.invalidate();
-    setIsLoading(false);
-    toast({
-      variant: "destructive",
-      title: "Success",
-      description: "Generation Aborted Successfully",
-    });
-  };
   const data = queryInfo[0]?.data?.msg;
-  if (data) {
-    toast({
-      variant: "success",
-      title: "Success",
-      description: queryInfo[0].data?.msg,
-    });
-  }
+  useEffect(() => {
+    if (data) {
+      toast({
+        variant: "success",
+        title: "Success",
+        description: data,
+      });
+    }
+  }, [data]);
   return (
     <Shell as={"div"} className="flex flex-col">
       <div className="flex gap-4 items-center">
@@ -57,25 +50,13 @@ export default function IndexPage() {
         >
           {isLoading ? <Skeleton>Generating...</Skeleton> : "Generate Docs"}
         </Button>
-        {isLoading ? (
-          <Button
-            onClick={() => {
-              cancelQuery();
-            }}
-            variant="outline"
-          >
-            Cancel
-          </Button>
-        ) : null}
+        {!isLoading && data && <span>{data}</span>}
       </div>
-      <Button
-        size="sm"
-        onClick={() => {
-          router.push("/docs");
-        }}
-      >
-        Go to docs
-      </Button>
+      <Link href={"/docs"}>
+        <Button variant="outline" size="sm">
+          Go to docs
+        </Button>
+      </Link>
     </Shell>
   );
 }

@@ -24,7 +24,7 @@ const theme: DocsThemeConfig = {
             strokeWidth="2"
           />
         </svg>
-        <h1 style={{ fontSize: "24px", fontWeight: "500" }}>100XNotebook</h1>
+        <h1 style={{ fontSize: "24px", fontWeight: "500" }}>100xNotebook</h1>
       </span>
       <style jsx>{`
         .parent svg,
@@ -53,7 +53,7 @@ const theme: DocsThemeConfig = {
     const { asPath } = useRouter();
     if (asPath !== "/") {
       return {
-        titleTemplate: "%s – 100XNotebook",
+        titleTemplate: "%s – 100xNotebook",
       };
     }
     return;
@@ -70,7 +70,7 @@ const theme: DocsThemeConfig = {
         <meta property="og:url" content={url} />
         <meta
           property="og:title"
-          content={title ? title + " – 100XNotebook" : "100XNotebook"}
+          content={title ? title + " – 100xNotebook" : "100xNotebook"}
         />
         <meta
           property="og:description"
