@@ -5,9 +5,9 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 
 export default function IndexPage() {
-  // if (process.env.NEXT_PUBLIC_VERCEL_ENV || process.env.VERCEL_ENV) {
-  //   return <div>Dashboard is not accessible in production yet.</div>;
-  // }
+  if (process.env.NEXT_PUBLIC_VERCEL_ENV || process.env.VERCEL_ENV) {
+    return <div>Dashboard is not accessible in production yet.</div>;
+  }
   if (!process.env.NEXT_PUBLIC_NOTION_PAGE_ID) {
     throw new Error(
       "Please correctly set your NEXT_PUBLIC_NOTION_PAGE_ID in your .env"
