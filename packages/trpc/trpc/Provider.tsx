@@ -1,6 +1,6 @@
 "use client";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { httpBatchLink } from "@trpc/client";
+import { httpBatchLink, httpLink } from "@trpc/client";
 import React, { type PropsWithChildren, useState } from "react";
 
 import { trpc } from "./client";
@@ -8,12 +8,17 @@ import { getUrl } from "./utils";
 import SuperJSON from "superjson";
 
 export default function TrpcProvider({ children }: PropsWithChildren) {
-  const [queryClient] = useState(() => new QueryClient({}));
+  const [queryClient] = useState(
+    () =>
+      new QueryClient({
+        defaultOptions: { queries: { staleTime: 1000 * 60 * 10 } },
+      })
+  );
   const [trpcClient] = useState(() =>
     trpc.createClient({
       transformer: SuperJSON,
       links: [
-        httpBatchLink({
+        httpLink({ // offs the http batching
           url: getUrl(),
         }),
       ],
