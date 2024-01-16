@@ -14,7 +14,7 @@ In React, a component can only return a single root element, commonly wrapped in
 ## Problem Statement
 
 
-![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/2a4ccbcd-a789-4e6e-baa3-9a22d3e1e89d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240116%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240116T123644Z&X-Amz-Expires=3600&X-Amz-Signature=108bc4e0d1efa93414ab113abc1890372fde66fddbc4747a2c227d65beedb9a0&X-Amz-SignedHeaders=host&x-id=GetObject)
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/2a4ccbcd-a789-4e6e-baa3-9a22d3e1e89d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240116%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240116T152225Z&X-Amz-Expires=3600&X-Amz-Signature=5e3d490ba2aef7d5d22aaea433398cf113148d41b440f7059f4876d58e11eab9&X-Amz-SignedHeaders=host&x-id=GetObject)
 
 
 One of the most prominent reasons for it is `Reconciliation`. The single-root element rule in React facilitates the `reconciliation` process, where React efficiently updates the real DOM based on changes in the virtual DOM. By having a single root element, React can easily perform the comparison between the previous and current states of the `virtual DOM`.
@@ -35,7 +35,7 @@ In addition to reconciliation, it aids in maintaining a straightforward and pred
 ## Solution
 
 
-![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/341d50a7-8c03-4891-8eae-66d279771288/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240116%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240116T123644Z&X-Amz-Expires=3600&X-Amz-Signature=19ef6a6c7a527e26b6cbd8a1541edb0411639efc1a9f835951a9e5df9e2312f5&X-Amz-SignedHeaders=host&x-id=GetObject)
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/341d50a7-8c03-4891-8eae-66d279771288/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240116%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240116T152225Z&X-Amz-Expires=3600&X-Amz-Signature=4f674afe18f440fc348a05bb81f0540c7760aeb4fc0acc4b89a9e0d291154eaa&X-Amz-SignedHeaders=host&x-id=GetObject)
 
 
 ```javascript
@@ -159,7 +159,7 @@ There are broadly 2 ways of minimizing the amount of rerenders
 When state is kept at a higher level in the component tree, any changes to that state can trigger re-renders for all child components, even if they don't directly use or depend on that particular piece of state. However, by `pushing the state down` and ensuring that each component only has access to the state it needs, you can minimize the impact of state changes on the overall component tree.
 
 
-![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/64323c34-591b-4b79-87a0-1180d7074852/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240116%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240116T123644Z&X-Amz-Expires=3600&X-Amz-Signature=994534ad36156b162b095c3dab0ffae9f9841fc31fff6001866036f97cced2e0&X-Amz-SignedHeaders=host&x-id=GetObject)
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/64323c34-591b-4b79-87a0-1180d7074852/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240116%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240116T152225Z&X-Amz-Expires=3600&X-Amz-Signature=a710aff9b47dd89ec5d4ca6f86f7b93c504edeff357b95a2c0db2ef3086c38e2&X-Amz-SignedHeaders=host&x-id=GetObject)
 
 
 > For example, if a specific piece of state is only relevant to a small portion of your application, keeping that state localized to the components in that section prevents unnecessary re-renders elsewhere. This practice contributes to a more efficient and performant React application.
@@ -174,7 +174,7 @@ The above problem of reducing the number of rerenders can also be tackled using 
 In the context of minimizing re-renders, **`useMemo`** is often employed to memoize the results of computations derived from state or props. By doing so, you can ensure that the expensive computation is only performed when the dependencies (specified as the second argument to **`useMemo`**) change.
 
 
-![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/9ae04a39-aa1a-45c7-930f-2838d4baacff/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240116%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240116T123644Z&X-Amz-Expires=3600&X-Amz-Signature=fad9ba568d2758930f444a749b49fe5e3f362c844e2598f0791c77979f09476b&X-Amz-SignedHeaders=host&x-id=GetObject)
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/9ae04a39-aa1a-45c7-930f-2838d4baacff/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240116%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240116T152225Z&X-Amz-Expires=3600&X-Amz-Signature=bcfee8780716c4f281103c19a25c1a92172004862c1fed7f67dc12d812aa021c&X-Amz-SignedHeaders=host&x-id=GetObject)
 
 
 > By using **`useMemo`**, you can strategically memoize computations to optimize performance and minimize the impact of re-renders in React.
@@ -369,7 +369,7 @@ Some commonly used React Hooks are: `useEffect`, `useMemo`, `useCallback`,  `use
 `useEffect` is a React Hook used for performing side effects in functional components. It is often used for tasks such as data fetching, subscriptions, or manually changing the DOM. The `useEffect` hook accepts two arguments: a function that contains the code to execute, and an optional array of dependencies that determines when the effect should run.
 
 
-![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/7fc204d2-97ed-488c-8e38-59af8c37ed99/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240116%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240116T123645Z&X-Amz-Expires=3600&X-Amz-Signature=b1fe5cdc139d92fa4c0a2ed2612523f225eaffd67a70e63d353e0dc56f5c5919&X-Amz-SignedHeaders=host&x-id=GetObject)
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/7fc204d2-97ed-488c-8e38-59af8c37ed99/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240116%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240116T152226Z&X-Amz-Expires=3600&X-Amz-Signature=5f731b78c6d19e9482530d68a2aade95bb7230eb415414e03264de7e3fcfc8bd&X-Amz-SignedHeaders=host&x-id=GetObject)
 
 
 Here's an example of how to use `useEffect`:

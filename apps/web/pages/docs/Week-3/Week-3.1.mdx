@@ -6,7 +6,7 @@
 
 
 
-![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/fa622371-9254-4b71-a034-333f3755dbf7/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240116%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240116T123329Z&X-Amz-Expires=3600&X-Amz-Signature=1ee8b6db60bff4c70fbde1a250d5411c1e865e78df2a0c3b95372ab35da53607&X-Amz-SignedHeaders=host&x-id=GetObject)
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/fa622371-9254-4b71-a034-333f3755dbf7/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240116%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240116T151947Z&X-Amz-Expires=3600&X-Amz-Signature=6b39b8b103ef3df720de5f8297c54a1549729dc0bc0a30a53b95c1e9ef044e46&X-Amz-SignedHeaders=host&x-id=GetObject)
 
 
 # Understanding Middlewares:
@@ -26,7 +26,7 @@ Think of a hospital where there's a doctor, patients waiting in line, and a few 
 	- One helper checks if patients have the right paperwork . This is like ensuring everyone is who they say they are `(Authentication)`
 	- Another helper does quick health checks – like making sure patients' blood pressure is okay. This is similar to checking if the information coming to the doctor is healthy and makes sense `(Input Validation)`
 
-![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/548d509d-be2a-4874-973d-90c9b363547a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240116%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240116T123329Z&X-Amz-Expires=3600&X-Amz-Signature=b003a0ecc48895d7ea721c2c5b8b2aa62a71139bb252b28a146feafd4fb55774&X-Amz-SignedHeaders=host&x-id=GetObject)
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/548d509d-be2a-4874-973d-90c9b363547a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240116%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240116T151947Z&X-Amz-Expires=3600&X-Amz-Signature=5b3b7d45a36f4591fd2bcc058f554ac353e4f591827c2d03e8a0c7a2434dcc84&X-Amz-SignedHeaders=host&x-id=GetObject)
 
 
 ## Middlewares in JS Context & Problem Statement:
@@ -41,14 +41,14 @@ Earlier we used to organize all our prechecks followed by the application logic 
 By isolating these preliminary checks into distinct functions or code blocks known as middlewares, we achieve a more modular and maintainable codebase. This separation not only streamlines the primary application logic but also promotes code reuse, making it easier to manage, understand, and scale our software architecture.
 
 
-![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/daf25e04-e7a6-4446-8037-f62b1982c10e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240116%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240116T123329Z&X-Amz-Expires=3600&X-Amz-Signature=8c34fcd732a830fe3de782a2ad52d29c700ec5f544a3bf4f586f9089da9cc5dc&X-Amz-SignedHeaders=host&x-id=GetObject)
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/daf25e04-e7a6-4446-8037-f62b1982c10e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240116%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240116T151947Z&X-Amz-Expires=3600&X-Amz-Signature=e2d8ce70c1c687b123579400b495ccfb472b4bfb9c5870baa39bfa7597cd8395&X-Amz-SignedHeaders=host&x-id=GetObject)
 
 
 ## Solution: Middlewares
 
 
 
-![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/751201d4-a495-414a-8541-5d95d43f34a2/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240116%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240116T123329Z&X-Amz-Expires=3600&X-Amz-Signature=da51a71a2c64febb33456e0d43af73651a866db66ebad89a90037d1552e4758e&X-Amz-SignedHeaders=host&x-id=GetObject)
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/751201d4-a495-414a-8541-5d95d43f34a2/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240116%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240116T151947Z&X-Amz-Expires=3600&X-Amz-Signature=b677ebcbb9a16456cd65eddabc2edb83aa07c2be2ba0f57a4e85908393ce9533&X-Amz-SignedHeaders=host&x-id=GetObject)
 
 
 > Furthermore, with middleware, we can easily include as many precheck functions as needed. This means we have the freedom to add various checks or operations to our application without making the main code complex. It's like having building blocks that we can mix and match to create a customized process for our application, making it more adaptable and easier to manage. Here `userMiddleware` and `kidneyMiddleware`
