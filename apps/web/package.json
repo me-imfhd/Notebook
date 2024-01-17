@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@hookform/resolvers": "^3.3.4",
     "@notebook/api": "workspace:*",
     "@notebook/auth": "workspace:*",
     "@notebook/db": "workspace:*",
@@ -31,6 +32,7 @@
     "notion-to-md": "^3.1.1",
     "react": "^18",
     "react-dom": "^18",
+    "react-hook-form": "^7.49.2",
     "react-markdown": "^9.0.1",
     "react-query": "^3.39.3",
     "react-syntax-highlighter": "^15.5.0",
