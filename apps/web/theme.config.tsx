@@ -2,9 +2,9 @@ import { useRouter } from "next/router";
 import { DocsThemeConfig, useConfig } from "nextra-theme-docs";
 
 const theme: DocsThemeConfig = {
-  project: {
-    link: "https://github.com/100XEnginners/100xnotebook",
-  },
+  // project: {
+  //   link: "https://github.com/100XEnginners/100xnotebook",
+  // },
   logo: () => (
     <>
       <span
@@ -48,7 +48,8 @@ const theme: DocsThemeConfig = {
       `}</style>
     </>
   ),
-  docsRepositoryBase: "https://github.com/100XEnginners/100xnotebook/tree/main/apps/web",
+  docsRepositoryBase:
+    "https://github.com/100XEnginners/100xnotebook/tree/main/apps/web",
   useNextSeoProps() {
     const { asPath } = useRouter();
     if (asPath !== "/") {
@@ -72,10 +73,7 @@ const theme: DocsThemeConfig = {
           property="og:title"
           content={title ? title + " – 100xNotebook" : "100xNotebook"}
         />
-        <meta
-          property="og:description"
-          content={"100xdevs Notebook."}
-        />
+        <meta property="og:description" content={"100xdevs Notebook."} />
       </>
     );
   },
@@ -93,7 +91,7 @@ const theme: DocsThemeConfig = {
     defaultMenuCollapseLevel: 2,
     toggleButton: true,
   },
-  footer: { text: `${new Date().getFullYear()} © Fahad` },
+  footer: { text: `${new Date().getFullYear()} © 100xDevs` },
   toc: { float: true, backToTop: true },
 };
 export default theme;

@@ -71,12 +71,12 @@ type generateFileAndFolderType = {
   flag: boolean;
   rootRoute: { title: string; name: string };
 };
-type rootMetaJsonType = {
-  [key: string]: {
-    type: "page";
-    title: string;
-  };
-};
+// type rootMetaJsonType = {
+//   [key: string]: {
+//     type: "page";
+//     title: string;
+//   };
+// };
 async function generateFileAndFolder({
   content,
   pageName,
@@ -101,38 +101,38 @@ async function generateFileAndFolder({
       path.join(process.cwd(), `./pages/${route}/_meta.json`),
       JSON.stringify(indexMetaJson, null, 2)
     );
-    const rootMetaFileExists = fs.existsSync(
-      path.join(process.cwd(), `./pages/_meta.json`)
-    );
-    if (rootMetaFileExists) {
-      const originalRootMetaJson = await fs.promises.readFile(
-        path.join(process.cwd(), `./pages/_meta.json`),
-        "utf-8"
-      );
-      const rootMetaObject = JSON.parse(
-        originalRootMetaJson
-      ) as rootMetaJsonType;
+    // const rootMetaFileExists = fs.existsSync(
+    //   path.join(process.cwd(), `./pages/_meta.json`)
+    // );
+    // if (rootMetaFileExists) {
+    //   const originalRootMetaJson = await fs.promises.readFile(
+    //     path.join(process.cwd(), `./pages/_meta.json`),
+    //     "utf-8"
+    //   );
+    //   const rootMetaObject = JSON.parse(
+    //     originalRootMetaJson
+    //   ) as rootMetaJsonType;
 
-      // updates old route with the give title or adds new routes
-      rootMetaObject[route] = {
-        type: "page",
-        title: title,
-      };
-      await fs.promises.writeFile(
-        path.join(process.cwd(), `./pages/_meta.json`),
-        JSON.stringify(rootMetaObject, null, 2)
-      );
-    } else {
-      const initMetaJson = {} as rootMetaJsonType;
-      initMetaJson[route] = {
-        type: "page",
-        title: title,
-      };
-      await fs.promises.writeFile(
-        path.join(process.cwd(), `./pages/_meta.json`),
-        JSON.stringify(initMetaJson, null, 2)
-      );
-    }
+    //   // updates old route with the give title or adds new routes
+    //   rootMetaObject[route] = {
+    //     type: "page",
+    //     title: title,
+    //   };
+    //   await fs.promises.writeFile(
+    //     path.join(process.cwd(), `./pages/_meta.json`),
+    //     JSON.stringify(rootMetaObject, null, 2)
+    //   );
+    // } else {
+    //   const initMetaJson = {} as rootMetaJsonType;
+    //   initMetaJson[route] = {
+    //     type: "page",
+    //     title: title,
+    //   };
+    //   await fs.promises.writeFile(
+    //     path.join(process.cwd(), `./pages/_meta.json`),
+    //     JSON.stringify(initMetaJson, null, 2)
+    //   );
+    // }
     return;
   }
   const dir = pageName
