@@ -1,0 +1,528 @@
+
+# GitHub CI/CD | Deploying Backends
+
+
+---
+
+
+# Resources
+
+
+---
+
+
+[bookmark](https://slides.com/harkiratsingh-2/week-9-2/)
+
+
+[link_preview](https://github.com/100xDevs-hkirat/week-9)
+
+
+# Brief Overview
+
+
+---
+
+
+**Deploying** means moving the backend from `localhost` to `internet`. Thus, making it accessible on internet. **AWS** is the most popular cloud, followed by **Azure**, **GCP**. 
+
+
+Deploying **Backends are slightly trickier than Frontends**, since frontends are usually same(html, css, js) for user, but data is dynamic which is served by backend.
+
+
+Two ways to deploy backends : 
+
+- Basic/Easy Requires Manual Work
+- Using CI/CD (Advance)
+
+> 💡 DevOps or Dev tooling is itself a lucrative and nice field to be in.
+
+
+# Pre CI/CD Days
+
+
+---
+
+
+Manually updating changes to server whenever a push happens to GitHub. But CI/CD is an automatic way based on certain logic like if a push/commit to GitHub repo it automatically updates the code on server.
+
+<details>
+<summary>What is a Domain Name ?</summary>
+
+Read Here 👉🏻  
+
+
+</details>
+
+
+> 😂 Jokes – Buy domains from ~~GoDaddy~~ Google Daddy, Discord is ~~loading~~ bloating.
+
+
+> ⚠️ Deploying depends upon technology we are using, for typescript it is different. So it varies accordingly. Not a single method for everything.
+
+
+# High Level Steps
+
+
+---
+
+
+The dumb way to deploy
+
+1. Choosing a Cloud provider (AWS/Azure/GCP)
+2. Creating an Instance (Creating a Machine)
+3. Generate an SSH Key (Key-Pair)
+4. Opening firewalls on the machine on port 80/443/22. (3000/3001)
+5. Cloning your code to the machine.
+6. Installing node/npm
+7. Building and running your code (pm2)
+8. Pointing your domain to the server - Covered in Week 10
+9. Using nginx to setup a reverse proxy - Covered in Week 10
+10. Certificate management - Covered in Week 10
+
+# Alternate Backend
+
+
+---
+
+
+If given code in `server folder` sucks, use the simplified `Hello World` code below to deploy.
+
+
+```javascript
+const express = require('express')
+const app = express()
+const port = 3000
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+```
+
+
+# Foundation/Terminologies
+
+
+---
+
+
+**Cloud** : Think of cloud like renting a computer online and paying per hour. To rent a computer on AWS : Choose the Category (here Compute, EC2), Select OS(here Ubuntu), Key Pair (Like password)
+
+
+> 💡 Think of cloud as Online Cybercafé, and you pay for hours you want to use.
+
+
+**URL** : [google.com](http://google.com/) is a URL, this long string [http://ec2-16-171-198-44.eu-north-1.compute.amazonaws.com/](http://ec2-16-171-198-44.eu-north-1.compute.amazonaws.com/) is a URL. Basically, a URL is an address of a machine on the Internet.
+
+
+> 💡  Think of this as the Hotel/Home’s Address.
+
+
+**Public IPv4 DNS** : It is the address of our cloud machine, similar to [Google.com](http://google.com/) is the address of Google and [http://ec2-16-171-198-44.eu-north-1.compute.amazonaws.com/](http://ec2-16-171-198-44.eu-north-1.compute.amazonaws.com/)  address of our cloud machine.
+
+
+**PORT** : In [localhost](http://localhost/) 3000, 3001 for Backend and [localhost](http://localhost/) 5173 for frontend vite are port numbers. Way to identify where process is communicating over internet.
+
+
+`80` for HTTP, `22` for SSH, `443` for HTTPS based on protocol in URL
+
+
+> 💡 Think of ports as the Room Number of a Hotel.
+
+
+> ⚠️ A **Process ID** (PID) is a unique identifier assigned by the operating system to each running process or application. **PORT** uniquely identify a specific communication endpoint in a network.
+
+
+**Port Settings**
+
+
+**By default**, all PORTS are closed except SSH and machine can access the internet. By default, In-Bound (SSH), Out-Bound (Internet/All)
+
+
+**In-Bound Rules** : Which traffic can come in. Technically, which URLs/IP can access machine from outside.
+
+
+**Out-Bound Rules** : Which traffic can go outside. Technically, which URLs/IP can a machine access.
+
+
+> 💡 Browsers automatically adds port number based on protocol used. Even if we manually add it would result the same.
+
+<details>
+<summary>Fun exercise, auto-assigned port is 443 for https or any secure website we visit.</summary>
+
+Typing `https://github.com` = `https://github.com:443`
+
+
+</details>
+
+
+# Connecting via SSH
+
+
+---
+
+
+**Connecting Machine/Instance via SSH :**  Make sure key-pair is downloaded.
+
+
+```bash
+ssh -i {downloaded-key.pem/cer} {username-os-dependent}@{machine-address/IPv4 DNS}
+ssh -i backend.pem ubuntu@ec2-13-48-5-59.eu-north-1.compute.amazonaws.com
+```
+
+
+> ⚠️ Extensions used for PEM (Privacy Enhanced Mail) certificates are `cer`, `crt`, and `pem`. All are same.
+
+
+### Fix 1
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/de7e4de4-a566-42c6-944e-cf8940b1bb5a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240117T214835Z&X-Amz-Expires=3600&X-Amz-Signature=99a6f843f67288616a35492eea872db7a4173c86f4b88d905f9d568eb471880e&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+<details>
+<summary>What happens, when enter `yes` ?</summary>
+
+The downloaded key from AWS is the **Private Key** and a **Public Key** is added to `~/.ssh/known_hosts`
+
+
+</details>
+
+
+### Fix 2
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/9a568fda-b52d-4543-b2b4-05bb6df01fc1/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240117T214835Z&X-Amz-Expires=3600&X-Amz-Signature=53f274bcb328869fa1d3c6e08cfc06849131f72dc2b7e237fcd870a435d54e82&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+**Pretty Self Explanatory** - Simply don’t allow anyone else to read the key. Basically run the commands below.
+
+
+```bash
+ls -l # To check the permissions
+chmod 600 backend.pem # To remove read permissions for other users.
+```
+
+
+# Installing Packages
+
+
+---
+
+
+**Installing Packages on Ubuntu/AWS Machine**
+
+
+[bookmark](https://www.digitalocean.com/community/tutorials/how-to-install-node-js-on-ubuntu-20-04)
+
+
+We will be using `nvm`  to install node
+
+
+```bash
+# this downloads and executes the script
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+
+# copy pasta this 
+export NVM_DIR="$HOME/.nvm"
+[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm
+[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion
+
+# refreshes your shell environment
+source ~/.bashrc
+```
+
+
+> 💡 The `source` command, also known as the dot command (**`.`**), is used to execute the contents of a script or file within the current shell environment.
+
+
+Installing **node**
+
+
+```bash
+nvm install node
+```
+
+
+Installing **pm2**
+
+
+As when we disconnect from the machine, the process stops running. To tackle that, we will install `pm2` This make sure it keeps running in background. Another benefit is if a process crashes, it restarts.
+
+
+```bash
+npm i -g pm2
+pm2 start index.js
+pm2 kill # kill the running process
+pm2 ls # list all the processes running
+```
+
+
+### Fix 3
+
+
+Address already in use
+
+
+```bash
+lsof -i :3000 # 3000 is the port already in use.
+kill -9 3000 # to kill the process
+```
+
+
+### Extra Nuggets
+
+
+Either ways to access the machine is same.
+
+
+```javascript
+http://ec2-13-48-5-59.eu-north-1.compute.amazonaws.com:3000
+http://13.48.5.59:3000
+```
+
+
+# 1st - Manual Deployment
+
+
+---
+
+
+Following are the steps to perform manual update/changes to server
+
+1. SSH into machine
+2. Pull your latest code `git pull origin {branch-name-main/master}`
+3. Start the process `pm2 start` or Stop existing process `pm2 kill`
+4. Re-build the code `Maybe have some new packages`
+5. Re-run the code (pm2)
+<details>
+<summary>Ignoring previously committed file in `.gitignore`</summary>
+
+```javascript
+git rm --cached backend.pem
+```
+
+
+</details>
+
+
+# 2nd - Automating via Bash Script
+
+
+---
+
+
+**Using Bash Script** : Writing all those manual command used in single file/script. Add this to `/home/ubuntu`  and to run `source ./deploy.sh`
+
+
+```bash
+# deploy.sh Script
+
+#!/bin/bash
+export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v21.1.0/bin
+
+cd ~/aws-test
+git pull origin main
+pm2 kill
+pm2 start index.js
+```
+
+
+> ⚠️ Make sure to change the version of node in   
+> `export PATH=$PATH:/home/ubuntu/.nvm/versions/node/`**`v21.1.0`**`/bin`
+
+
+To check the **node version** and **pm2 bin path** run the command below
+
+
+```bash
+node -v # To check node version
+
+which node # To get the binary path of node
+which pm2 # To get the binary path of pm2
+```
+
+
+```javascript
+source ./deploy.sh
+```
+
+
+> 🤔 Still, we have to log in to the cloud machine and run this script manually. Although, number of commands entered manually are reduced.
+
+
+# 3rd - Single Line Script via Local Machine
+
+
+---
+
+
+**One Command in local machine** : Still an extra command after pushing changes to github.
+
+
+```bash
+ssh -t -i "cert-file.cer" ubuntu@ec2-url  "sudo {bash/source} ~/deploy.sh"
+```
+
+
+Below is the script I used.
+
+
+```bash
+# deploy.sh Script
+
+#!/bin/bash
+export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v21.1.0/bin
+
+cd ~/aws-test
+git pull origin main
+pm2 kill
+pm2 start index.js
+```
+
+
+This is the more specific script if some issues are faced.
+
+
+```bash
+# deploy.sh Script
+
+# Set the PATH to include the directory containing the 'node' executable
+export PATH=$PATH:/home/ubuntu/.nvm/versions/node/v21.1.0/bin
+
+# Set the full path to pm2
+PM2_PATH=/home/ubuntu/.nvm/versions/node/v21.1.0/bin/pm2
+
+cd ~/aws-test
+git pull origin main
+
+# Use the full path to start pm2
+$PM2_PATH kill
+$PM2_PATH start index.js
+```
+
+
+> 👉🏻 **Goal** : As when a commit is made to GitHub, it should auto-deploy.
+
+
+# 4th - GitHub Actions CD
+
+
+---
+
+
+Platforms similar to GitHub are GitLab, Bit Bucket, offers feature called **CD** (**Continuous Deployment**) which essentially allow us to create actions (similar to scripts) that auto deploys on commit to specific branch to repository.
+
+
+Also to ensure that production ready code is commited or merged to main branch these version control platforms offer **CI** (**Continuous Integration**), involves running a series of **automated tests** when code is pushed to the main repository, but before it is merged or committed. 
+
+
+[bookmark](https://youtu.be/_zCyLT33moA?si=17BAov5D-CnbTvLI)
+
+
+In GitHub Repository, inside `.github/workflows/` create, `deploy-to-aws.yaml`
+
+
+> 💡 `yaml` files similar to `json, xml` to describe the content/flow
+
+
+![Adding secret to GitHub repository.](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/d287feea-2a95-4543-a06e-491625109aa0/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240117T214836Z&X-Amz-Expires=3600&X-Amz-Signature=bf813a2fdfd42581989299f267cbaaa747e44e90f555e06ffd5414cdcc56f98b&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+```yaml
+name: "Deploy to AWS EC2" # Name of action.
+
+on: # when to run action named; Deploy.
+  push:
+    branches:
+      - main # when commit happens to "main" branch.
+
+jobs:
+	
+  deploy: # Name of Job/Task, can have any number of jobs/tasks.
+    runs-on: ubuntu-latest # this is github's own machine, like our local machine.
+
+    steps:
+    - name: Checkout code # To clone the code. 
+      uses: actions/checkout@v2 
+
+    - name: SSH and deploy
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      run: |
+        echo "$SSH_PRIVATE_KEY" > keyfile
+        chmod 600 keyfile
+        ssh -t -i keyfile ubuntu@ec2-url "sudo bash ~/deploy.sh"
+```
+
+
+**CD** – Continuous Deployment, When changes are auto-deployed to server.
+
+
+**CI** – Continuous Integration, When changes/features/new code is  are added to master repository.
+
+
+**Action above gives the error below** : This is quite technical, but in short, GitHub’s Ubuntu machine denies connecting since it connects to the machines which it already knows. These are stored in `known_hosts` in our machine.
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/2e19f782-56c9-4289-b9ab-c5251bacf789/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240117T214836Z&X-Amz-Expires=3600&X-Amz-Signature=22d8d284a25d352c502af747b86cc22269a898e808c6723317dbecd36f17122f&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+```yaml
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main 
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: SSH and deploy
+      env:
+        SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      run: |
+        echo "$SSH_PRIVATE_KEY" > keyfile
+        chmod 600 keyfile
+        mkdir -p ~/.ssh
+        cp known_hosts ~/.ssh/known_hosts
+        ssh -t -i keyfile ubuntu@ec2-13-48-5-59.eu-north-1.compute.amazonaws.com "source ~/deploy.sh"
+```
+
+
+Finding the public key/known_hosts of a specific machine.
+
+
+```bash
+# Command to find known_host
+ssh-keyscan ec2-url >> known_hosts
+
+# Alternatively
+cat ~/.ssh/known_hosts > known_hosts
+```
+
+
+# Beyond this
+
+
+---
+
+
+Still there are some manual steps involved
+
+1. Going to sever and adding script to it. `deploy.sh`
+2. SSH setup
+
+To avoid touching the server at all we can use Infrastructure As A Code and some popular tools are Ansible, Terraform.
+
+
+[bookmark](https://youtu.be/snCP3c7wXw0)
+

@@ -1,6 +1,10 @@
 {
+  "oldDocs": {
+    "type": "page",
+    "title": "100xDevs Old Notebook"
+  },
   "docs": {
     "type": "page",
-    "title": "Documentation"
+    "title": "100xDevs Notebook"
   }
 }

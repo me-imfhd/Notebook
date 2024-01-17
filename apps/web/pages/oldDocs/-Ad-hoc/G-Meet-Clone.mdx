@@ -1,0 +1,205 @@
+
+[link_preview](https://github.com/100xDevs-hkirat/gmeet-webrtc)
+
+
+[bookmark](https://slides.com/harkiratsingh-6/building-gmeet)
+
+
+## Introduction
+
+
+---
+
+1. **Going niche is different but better** : Separate from crowd.
+2. WebRTC Story
+3. G-Meet (Hard Parts)
+
+**Right Hot Niche Tech**
+
+1. Look for good paying & in demand niche.
+2. Like today, **AI** (The Best) ✅, **Web3** (Later) ✅, WebRTC ❌
+3. Then **Learning** 3 Months, **Underpricing** 3 Months, **Work Experience** 3 Months, **Ask your Bid** 3 Months.
+
+> 😮 8–10 people company Streamyard got acquired for $250M
+
+
+**Freelancing Path**
+
+1. **First client** – Charged $30/hour – 6 months – Used [Agora](https://www.agora.io/en/), [LiveKit](https://livekit.io/)
+2. **Second client** – Charged $70k – $100k, exit at $150k – 1 Year – Built
+the in house streaming from scratch, Real WebRTC Learning/Expert
+3. **Third company** – $500k Offer ($200k Cash, rest stock) – Joined as the video lead – 1 Year
+
+## Learning WebRTC
+
+
+---
+
+
+Achieving Real Time Communication
+
+1. **Polling/Jugaad** : Sending request after a specific interval.
+2. **Websockets/SSE** (Server Side Events) : Server automatically sends the updates whenever data is added/udpated. Basically whenever an event happens it is sent to frontend.
+
+> 💡 Like we built **HTTP Server** and used HTTP protocol, similarly we can build **WebSocket Server**, using WebSocket Protocol.
+
+
+## Web Socket Demo
+
+
+---
+
+
+[Socket.io](https://socket.io/)
+
+
+```javascript
+npm install express@4 socket.io
+```
+
+
+```javascript
+**// Index.js**
+
+const app = require('express')();
+const http = require('http').llServer(app);
+const io = require('socket.io')(http);
+const port = process.env.PORT || 3000;
+
+app.get('/', (req, res) => {
+  res.sendFile(__dirname + '/index.html');
+});
+
+io.on('connection', (socket) => {
+  socket.on('chat message', msg => {
+    io.emit('chat message', msg);
+  });
+});
+
+http.listen(port, () => {
+  console.log(`Socket.IO server running at http://localhost:${port}/`);
+});
+```
+
+
+> 💡 So with WebRTC, Browser can directly talk to browser(**P2P**), without use of server.
+
+
+```javascript
+**// Index.html**
+
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Socket.IO chat</title>
+    <style>
+      body { margin: 0; padding-bottom: 3rem; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+
+      #form { background: rgba(0, 0, 0, 0.15); padding: 0.25rem; position: fixed; bottom: 0; left: 0; right: 0; display: flex; height: 3rem; box-sizing: border-box; backdrop-filter: blur(10px); }
+      #input { border: none; padding: 0 1rem; flex-grow: 1; border-radius: 2rem; margin: 0.25rem; }
+      #input:focus { outline: none; }
+      #form > button { background: #333; border: none; padding: 0 1rem; margin: 0.25rem; border-radius: 3px; outline: none; color: #fff; }
+
+      #messages { list-style-type: none; margin: 0; padding: 0; }
+      #messages > li { padding: 0.5rem 1rem; }
+      #messages > li:nth-child(odd) { background: #efefef; }
+    </style>
+  </head>
+  <body>
+    <ul id="messages"></ul>
+    <form id="form" action="">
+      <input id="input" autocomplete="off" /><button>Send</button>
+    </form>
+    <script src="/socket.io/socket.io.js"></script>
+
+    <script>
+      var socket = io();
+
+      var messages = document.getElementById('messages');
+      var form = document.getElementById('form');
+      var input = document.getElementById('input');
+
+      form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (input.value) {
+          socket.emit('chat message', input.value);
+          input.value = '';
+        }
+      });
+
+      socket.on('chat message', function(msg) {
+        var item = document.createElement('li');
+        item.textContent = msg;
+        messages.appendChild(item);
+        window.scrollTo(0, document.body.scrollHeight);
+      });
+    </script>
+  </body>
+</html>
+```
+
+
+> ⚠️ **Web Socket** internally uses **TCP** (It makes sure connection is established, like in payments, a connection is must), while WebRTC uses **UDP** (It doesn’t care about connection, just sends the data).
+
+
+## WebRTC
+
+
+---
+
+
+No URLs here like we used in fetch or axios, instead **STUN Server** is used to get IP + PORT of the client, which is later shared between two to establish the connection.
+
+
+**Signalling Sever** : Server in middle to share the IP + PORT between clients.
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/2839f86a-860a-45af-9c10-3bab799a361d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240117T214852Z&X-Amz-Expires=3600&X-Amz-Signature=8c4742709b041180a2500904b5063d6f22f216befe503efb2c76fd3f52525eb0&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+**Ice Candidates** : PROTOCOL + IP + PORT makes an Ice Candidate, like `udp 122.172.82.7130700`
+
+
+[Ice Candidate Test](https://webrtc.github.io/samples/src/content/peerconnection/trickle-ice/)
+
+
+**Peer Connection Object** : `RTCPeerConnection` a global object in browser.
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/b33d2d56-a1f6-4ebe-a8b7-c7a4b6bb7af7/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240117T214852Z&X-Amz-Expires=3600&X-Amz-Signature=6d3cea6a6b06cb46f7746e7d0a9e0fe9325b3071d327a8088cffa719a7bb18fa&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+**localDescription** : One of the property when we create a new object of RTCPeerConnection. This holds the data like IP, PORT. Simply the information that need to be shared.
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/3c619268-aaa8-489d-bde9-9178adfcc022/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240117T214852Z&X-Amz-Expires=3600&X-Amz-Signature=7cf168bcf82f6afb1a49ebe5d8b668739fd448fad75c70bc7e39f1228ac6f393&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+**remoteDescription** : This property holds the data about the another browser/peer with whom we can to establish the connection.
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/c324f6e9-23c4-4445-a13d-41d650c597e1/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240117T214852Z&X-Amz-Expires=3600&X-Amz-Signature=c50a017b1d5c4c0827c30a8850a20e944210510d7b184c1e7e4c27979d521332&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+> 💡 Think of this as  
+> `localDescription` = Browser 1 IP, PORT etc.  
+> `remoteDescription` = Browser 2 IP, PORT etc.
+
+
+**SDP** (Session Description Protocol) : Exchanging the local + remote description between two browsers.
+
+
+**Tracks** : Once SDP is done, `addTrack()` to sends video track, `onTrack()` to receive the video track.
+
+
+🚀 The below demo is doing the same in the same browser, without need of signalling server.
+
+
+[bookmark](https://jsfiddle.net/rainzhao/3L9sfsvf/)
+
+
+**Check the connection** : `chrome://webrtc-internals/`
+
+
+> 😂 Sucks : `navigator.mediaDevices.getUserMedia({video:true})` only line to turn on video.
+

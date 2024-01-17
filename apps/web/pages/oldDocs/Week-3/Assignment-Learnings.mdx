@@ -1,0 +1,126 @@
+
+## 01 – Course App
+
+
+---
+
+
+**Object Deconstructing** : A smart way to create variables out of an object with the names same as  properties name and value corresponding to that property. In the example below, It creates two variables `username` and `password` from the `req.headers` object with corresponding value.
+
+
+```javascript
+const { username, password } = req.headers;
+
+console.log(username) // "madhav"
+console.log(password) // "madhav123"
+```
+
+
+**Revisiting** `find()` 
+
+
+```javascript
+const numbers = [1, 2, 3, 4, 5];
+const fi = numbers.find(element => element === 6);
+
+console.log(fi); // Output: undefined(falsy)
+```
+
+
+**Object Creation Shorthand** : Below shorthand creates an object out using variables, where property name is variable name and its value is variable’s value.
+
+
+```javascript
+ADMINS.push({
+  username,
+  password
+});
+```
+
+
+> 💡 It is **headers** not ~~header~~
+
+
+Code below is full of concepts :  `parseInt()`, update of courses by reference and `Object.assign(course, req.body)`
+
+
+```javascript
+app.put('/admin/courses/:courseId', adminAuthentication, (req, res) => {
+  const courseId = **parseInt(req.params.courseId);**
+  const course = COURSES.find(c => c.id === courseId);
+  if (course) {
+    **Object.assign(course, req.body);**
+    res.json({ message: 'Course updated successfully' });
+  } else {
+    res.status(404).json({ message: 'Course not found' });
+  }
+});
+```
+
+
+Create a **global variable** for courseID, if using 1, 2, 3 etc. not inside the route.
+
+
+We can **pass any number of middlewares** in a route.
+
+
+We can **add object to request** in middleware `req.user = user`;
+
+
+In `filter` function, we have to pass the boolean condition.
+
+
+`indexOf`  : It is like asking index of this element in this array.
+
+
+```javascript
+const numbers = [1, 2, 3, 4, 5];
+
+console.log(numbers.indexOf(3)); // Output: 2
+console.log(numbers.indexOf(6)); // Output: -1
+```
+
+
+## 03 – Data to Filesystem
+
+
+---
+
+
+Two essential concepts when read and write in this case. 
+
+1. We write in string/stringify format.
+2. So when to read, we have to parse that string/stringified format
+
+```javascript
+ADMINS = JSON.parse(fs.readFileSync('admins.json', 'utf8'));
+fs.writeFileSync('admins.json', JSON.stringify(ADMINS));
+```
+
+
+> 💡 Previous data state is stored in files, is initialized at time of server start. Write running application current and updated state is in the variables.
+
+
+## 02 (Authentication) & 04 (Database)
+
+
+---
+
+
+These are covered with concept in Backend – Database & Authentication
+
+
+[Auth and Database](https://www.notion.so/0ed95fd33ffd4e8b8c2174cececfc812) 
+
+
+## 05 Reconciler
+
+
+---
+
+
+Covered in Week-4
+
+
+[Reconcilers](https://www.notion.so/707787a57dce4c7a88ab8364547ce041) 
+

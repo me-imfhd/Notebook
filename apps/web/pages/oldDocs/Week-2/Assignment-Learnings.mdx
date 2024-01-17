@@ -1,0 +1,395 @@
+
+## Todo List
+
+
+---
+
+
+**Ways to generate Random Unique ID** 
+
+1. **Use counter variable** : Easy and only applicable in the given assignment.
+
+> 💡 $0 ≤ Math.random() <1$
+
+1. **Using set of characters and verifying inside set** : 100% unique.
+
+```javascript
+const usedIds = new Set();
+
+function generateUniqueId(length) {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+
+  do {
+    result = '';
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+  } while (usedIds.has(result));
+
+  usedIds.add(result);
+  return result;
+}
+
+// Usage
+const id1 = generateUniqueId(10);
+console.log(id1);
+```
+
+1. **Date.now()** : Returns the number of miliseconds elapsed since January 1, 1970. But can clash if request arrived sent at same time.
+2. **Using Library** : `uuid`
+
+**Below is correct JSON format, if feel unintuitive** 
+
+
+```javascript
+[
+  {
+    "id": 1,
+    "title": "Complete assignment",
+    "description": "Finish the project assignment by Friday",
+    "completed": false
+  },
+  {
+    "id": 2,
+    "title": "Buy groceries",
+    "description": "Get milk, eggs, and bread from the store",
+    "completed": true
+  },
+  {
+    "id": 3,
+    "title": "Go for a run",
+    "description": "Run for 30 minutes in the park",
+    "completed": false
+  }
+]
+```
+
+
+JSON doesn’t need to be inside `{ }`  it can be inside `[ ]`
+
+
+The property names are enclosed in double quotes " " and their corresponding values can be of various data types, such as numbers, strings, booleans, or even nested objects or arrays.
+
+
+To send the json `res.json()`
+
+
+**Extracting id from catch all route.**
+
+
+`id` in `app.get('/todos/:id', getTodoByID)` is a path variable and extracted similar to query params like **`req.params.id`** and its type is **`string`** , so convert to a Number, like **`Number(req.params.id)`** or pareseInt**`(req.params.id)`**
+
+
+**Iterating over an array of objects, to get index.**
+
+
+```javascript
+// Using findIndex() method to return the index of the found element
+const index = todos.findIndex(todo => todo.id === searchId);
+```
+
+
+**Iterating over an array of objects, to get an object.**
+
+
+```javascript
+// Using find() method to return the found element
+const foundTodo = todos.find(todo => todo.id === searchId);
+```
+
+
+**Deleting an element from an array :** `todos.splice(indexToDelete, 1);`  [MDN Read](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
+
+
+**For undefined routes** : Place at the end.
+
+
+```javascript
+app.use((req, res) => {
+  res.status(404).send('Not Found');
+});
+```
+
+
+## Todo List (Hard)
+
+
+---
+
+
+```javascript
+**// Server Boilerplate**
+const express = require('express');
+const fs = require('fs')
+const app = express();
+
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
+// const port = 3000;
+// app.listen(port, console.log("Listening"))
+
+**// Global**
+function getTodoList(){
+  const rawData = fs.readFileSync('./todoList.json', 'utf8');
+  const toReturn = JSON.parse(rawData);
+  return toReturn;
+}
+
+function writeTodoList(content){
+  fs.writeFileSync('./todoList.json', content);
+  return;
+}
+
+let idGenerator = 4;
+
+**// GET all**
+function getTodos(req, res){
+  let todoLists = getTodoList();
+  res.json(todoLists)
+}
+app.get('/todos', getTodos)
+
+**// GET by id**
+function getTodoByID(req, res){
+  const searchId = Number(req.params.id);
+  let todoLists = getTodoList();
+  const foundTodo = todoLists.find(todo => todo.id === searchId)
+  if (foundTodo) {
+    res.json(foundTodo)
+  } else {
+    res.status(404).send()
+  }
+}
+app.get('/todos/:id', getTodoByID)
+
+**// POST** 
+function addTodo(req, res){
+  let todoLists = getTodoList();
+  const newTodo = req.body;
+  newTodo.id = idGenerator++;
+  todoLists.push(newTodo)
+  writeTodoList(JSON.stringify(todoLists))
+  res.status(201).json(newTodo);
+
+}
+
+app.post('/todos', addTodo)
+
+**// PUT by id**
+function updateTodo(req, res){
+  const searchId = Number(req.params.id);
+  let todoLists = getTodoList();
+  const foundIndex = todoLists.findIndex(todo => todo.id === searchId)
+  if (foundIndex !== -1) {
+    const updateData = req.body;
+    for(let property in updateData){
+      todoLists[foundIndex][property] = updateData[property]
+    }
+    writeTodoList(JSON.stringify(todoLists));
+    res.send("Updated")
+  } else {
+    res.status(404).send()
+  }
+}
+
+app.put('/todos/:id', updateTodo)
+
+**// DELETE by id**
+function deleteTodo(req, res){
+  const searchId = Number(req.params.id);
+  let todoLists = getTodoList();
+  const foundIndex = todoLists.findIndex(todo => todo.id === searchId)
+  if (foundIndex !== -1) {
+    todoLists.splice(foundIndex, 1)
+    writeTodoList(JSON.stringify(todoLists))
+    res.send("Deleted")
+  } else {
+    res.status(404).send("Doesn't Exit")
+  }
+}
+app.delete('/todos/:id', deleteTodo)
+
+**// Any other route**
+app.use((req, res) => {
+  res.status(404).send('Wrong Route');
+});
+
+
+module.exports = app;
+```
+
+
+```javascript
+// Sample Data
+[
+  {
+    "id": 1,
+    "title": "Complete assignment",
+    "description": "Finish the project assignment by Friday",
+    "completed": false
+  },
+  {
+    "id": 2,
+    "title": "Buy groceries",
+    "description": "Get milk, eggs, and bread from the store",
+    "completed": true
+  },
+  {
+    "id": 3,
+    "title": "Go for a run",
+    "description": "Run for 30 minutes in the park",
+    "completed": false
+  }
+]
+```
+
+
+## Authentication
+
+
+---
+
+
+**Status Codes**
+
+
+`201`  Created, like user signed-up
+
+
+`400`  Bad Request, username already exists.
+
+
+`401`  Unauthorised, Wrong login Credentials
+
+
+**Spread Operator** : The spread operator in JavaScript is denoted by three dots (...) and is used to expand an iterable (e.g., an array or object) into individual elements. It allows you to clone, concatenate, or extract elements from arrays and objects easily.
+
+
+![Screenshot_2023-06-24_at_8.26.46_AM.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/bc69e503-3333-4202-9e25-f0a7b2e81504/Screenshot_2023-06-24_at_8.26.46_AM.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240117T214807Z&X-Amz-Expires=3600&X-Amz-Signature=8cf4e89c13a5c1e61dfa3d5b5e608bf4ac9347230576564b92f3e836f63d9bb7&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+```javascript
+// Cloning an array
+
+const originalArray = [1, 2, 3];
+const clonedArray = [...originalArray];
+console.log(clonedArray); // [1, 2, 3]
+```
+
+
+```javascript
+// Concatenating arrays
+
+const array1 = [1, 2, 3];
+const array2 = [4, 5, 6];
+const concatenatedArray = [...array1, ...array2];
+console.log(concatenatedArray); // [1, 2, 3, 4, 5, 6]
+```
+
+
+```javascript
+// Adding elements to an existing array
+
+const originalArray = [1, 2, 3];
+const newArray = [...originalArray, 4, 5, 6];
+console.log(newArray); // [1, 2, 3, 4, 5, 6]
+```
+
+
+```javascript
+// Spreading elements of an array as function arguments
+
+const numbers = [1, 2, 3];
+console.log(Math.max(...numbers)); // 3
+```
+
+
+```javascript
+// Creating a new object by merging existing objects
+
+const obj1 = { name: 'John' };
+const obj2 = { age: 30 };
+const mergedObj = { ...obj1, ...obj2 };
+console.log(mergedObj); // { name: 'John', age: 30 }
+```
+
+
+**Rest Operator**
+
+
+```javascript
+// Extracting remaining elements from an array
+
+const [first, second, ...rest] = [1, 2, 3, 4, 5];
+console.log(first); // 1
+console.log(second); // 2
+console.log(rest); // [3, 4, 5]
+```
+
+
+```javascript
+// Combining rest and spread operators:
+
+const numbers = [1, 2, 3, 4, 5];
+const [first, ...rest] = numbers;
+console.log(first); // 1
+console.log(rest); // [2, 3, 4, 5]
+```
+
+
+```javascript
+// Function parameter with variable arguments
+
+function sum(...numbers) {
+  return numbers.reduce((total, num) => total + num, 0);
+}
+
+console.log(sum(1, 2, 3)); // 6
+console.log(sum(4, 5, 6, 7)); // 22
+```
+
+
+**Remove object’s property** : `delete objectName.properyName`
+
+
+## File Server
+
+
+---
+
+
+**Get /files**
+
+
+To read folder/directory `fs.readdir( completePath , callback)` , to get complete path `path.join(__dirname, './files')` where `__dirname` global variable have absolute path of the current directory and `./files` relative path to current current directory. So we using extra library `path` shipped with NodeJS.
+
+
+**Get /file/:filename**
+
+
+`filename` in `app.get('/file/:filename', searchFile)` is a path variable and extracted similar to query params like `req.params.id` and its type is `string` 
+
+
+When writing callback of `fs` always always `error` then `data/file`
+
+
+ 
+
+
+**Handling any route and any method**
+
+
+```javascript
+function anyRoute(req, res){
+	res.status(404).send('Route not found');
+}
+
+**app.all('*', anyRoute);**
+```
+
+
+It is commonly called as a **fallback** or **catch-all route** to handle any type of request for any type of routes that do not exist in your application. `app.all('*', ...)` registers a route handler for all HTTP methods (`all`) and all routes (`*`).
+

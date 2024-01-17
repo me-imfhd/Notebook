@@ -1,0 +1,348 @@
+
+# Frontend Deployments Certificate Management
+
+
+# Resources
+
+
+---
+
+
+[bookmark](https://slides.com/harkiratsingh-2/week-10-1)
+
+
+[link_preview](https://github.com/100xDevs-hkirat/week-10)
+
+
+# Linking/Pointing domain name to server.
+
+
+---
+
+
+**What is a domain name ?**
+
+
+[Google.com](http://google.com/), [Amazon.com](http://amazon.com/) etc. these are domain names. As your name points to you, MacBook Air M1 points to a specific MacBook/Laptop, similarly a domain name points to a Server’s Address, technically called IP address. IP/Server’s address looks something like this 192.168.1.1. Since it is hard to remember, so we have domain names that resolves/translates to IP Address. 
+
+Note : Like anything else, you have to purchase it.
+
+
+> 💡 In short, the Server’s Address looks something like this, 192.168.1.1. Since we hate/cannot remember numbers, so we have domain name, which automatically translates/resolves to corresponding IP address. Like anything else, you have to purchase it.
+
+
+**How to do this ?**
+
+
+Go to DNS and add the `A (Alias) Record` and `corresponding IP` given in Instance of AWS. Here we are adding subdomain and pointing to AWS server. Now what is subdomain ? That is your homework.
+
+
+> ⚠️ Once you add this, it takes time to update, max 24 hours. Why ? Huge story, homework.
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/b1fbbde7-6d20-4118-b7e3-bbd9705ccb1c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240117T214841Z&X-Amz-Expires=3600&X-Amz-Signature=6792a7df536a5b7d47687ea518c72e66b22425348ca9c914cb360f57c6a947c2&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+> 🤩 Want to check the IP/Server’s Address of any domain name, visit the website below
+
+
+[bookmark](https://www.site24x7.com/tools/find-ip-address-of-web-site.html)
+
+
+# Ngnix as Reverse Proxy
+
+
+---
+
+
+### Running backend on Port 80
+
+
+Our service/node app is running on `PORT 3000`, and to access that, we enter `ec2-16-171-198-44.eu-north-1.compute.amazonaws.com:3000`, have you ever done in real life access websites. Nope !!! 😂
+
+
+This is what we are going to fix.
+
+
+The moment we type `google.com` and hit enter, `PORT 80` (uses HTTP protocol, isn’t much safer) is appended at the end by default by browser. So, lets trying running backend on PORT 80, instead of 3000.
+
+
+We see permission denied error.
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/63b21744-6cc8-4266-80bb-27348b32815b/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240117T214841Z&X-Amz-Expires=3600&X-Amz-Signature=6c3f612d24b73e9fd3973ef0b3045f6c482890c5759be57ad0561f0616068b68&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+### Fix 1 : node Command not found.
+
+
+When we try to run backend on port 80 instead of 3000. You may get this error.
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/fea96e10-0d77-4ef7-87c3-436091778c26/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240117T214841Z&X-Amz-Expires=3600&X-Amz-Signature=cbbfb7a1996f5b27f61c23b9ed03a347cab42952b1f4a706a81f3624a587b7c7&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+We can fix the error above running the command below.
+
+
+```bash
+sudo node index.js
+
+# if above sucks or doesn't work
+which node # get the path and paste below
+sudo {path} index.js # replace the path here.
+sudo /home/ubuntu/.nvm/versions/node/v21.1.0/bin/node index.js # in my case
+```
+
+
+### Why Ngnix ?
+
+
+Hmm, all looks good, isn’t it ?
+
+
+But not. It is because we usually run multiple backends/frontends/services on single Server, Let's say on EC2. It is because cloud is expensive, and we want to `Utilise resources properly` /  `Paisa Vasool` and ngnix helps in `vasooling paisa`
+
+
+> 😂 In cloud, we pay per hour and want to make sure `Paisa is Vasooled` We will take help of `nginx`
+
+
+`ngnix` is a process, this can do a bunch of things, but we are interested in reverse proxy. 
+
+
+[bookmark](https://youtu.be/JKxlsvZXG7c?si=AoOG-GyLyNkVAbWc)
+
+
+All domain name point to same machine via same port 80, but based on `url` it should check hit the corresponding service. Technically, reverse proxy is when it hits an another process before it hit final/end process. Sort of broker/middle-man.
+
+
+### Forward vs Reverse Proxy
+
+
+[bookmark](https://youtu.be/AuINJdBPf8I?si=-Pcwlzm_MYx4hzxi)
+
+
+**Forward Proxy** - Client End
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/94b5bb1b-1a02-4b27-8c71-e27f3d7fb259/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240117T214841Z&X-Amz-Expires=3600&X-Amz-Signature=a1ef50d36992e2e629f764f4f2cfb097bb8823aa67c5fee1442304691d885a53&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+**Reverse Proxy** - Back End
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/82e0e734-c567-4580-bdb8-3b9838215e3f/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240117T214841Z&X-Amz-Expires=3600&X-Amz-Signature=aec7403936a74e0c9bbde87ec70c43c55f2467666e698ef4aff74b5c4bf44b87&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+**An implementational example**
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/ba5c3026-8869-4e78-b783-12f736452284/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240117T214841Z&X-Amz-Expires=3600&X-Amz-Signature=b5949f8b0666948e68541780add66cc15e534231e0a9deca4eff9c9a60abfbd9&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/288ff50c-ea8d-4d7f-b025-ff26f25c6cab/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240117T214841Z&X-Amz-Expires=3600&X-Amz-Signature=518a44ae32ca69db81cd0710fd83423396e2eace10e33cb9bd185e0aafb134dc&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+![Source : Link](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/fb0f7c10-ba84-4139-88b6-01889f9ed31c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240117T214841Z&X-Amz-Expires=3600&X-Amz-Signature=2796db82ecf89ac9fadb85167b955fbb981038244497b04354b74211d02646ce&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+### Installing Ngnix
+
+
+Run the command below
+
+
+```bash
+sudo apt-get install nginx
+```
+
+
+If you install successfully, you should see this.
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/11e57bd8-03c7-48a6-a68e-06b2c6f2f00f/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240117T214841Z&X-Amz-Expires=3600&X-Amz-Signature=490f52f92a742c359ff4ba1cf2bf1d5678d5b99cfb0e99d4adaf24c0cf0ce55d&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+### Configuring port 80
+
+
+Below is the configuration file to set-up reverse proxy. 
+
+
+```javascript
+events {
+    worker_connections 1024;
+}
+
+http {
+    server {
+        listen 80;
+        server_name dev1.codesleepcode.com;
+
+        location / {
+            proxy_pass http://localhost:3000;
+            proxy_http_version 1.1;
+            proxy_set_header Upgrade $http_upgrade;
+            proxy_set_header Connection 'upgrade';
+            proxy_set_header Host $host;
+            proxy_cache_bypass $http_upgrade;
+        }
+    }
+}
+```
+
+
+```bash
+/etc/nginx/nginx.conf # nginx.conf file location
+sudo nginx -s reload # to reload the configuration 
+```
+
+
+> ⚠️ If permission denied, use `sudo` before the command.
+
+
+### Other than localhost
+
+
+Using custom name instead of [localhost](http://localhost/) locally in machine. Add host
+
+
+> ⚠️ Basically instead of `http://localhost:3000` we can use `http://testing.com:3000`  
+> as per below configuration
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/a745838d-7c7a-4f84-a796-92d839f85da0/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240117T214842Z&X-Amz-Expires=3600&X-Amz-Signature=a4a0e6245c0897ba817a017d1ddb7e6383da16f565b605b31e512ed519c61aa4&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+# Certificate Management
+
+
+---
+
+
+If there is **lock** when we browse a website it is `https`, if not or shows Not Secure it is `http`
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/a80ff18f-52b3-4b46-ac0c-46e900bebf4c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240117%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240117T214842Z&X-Amz-Expires=3600&X-Amz-Signature=91c208ac4f664f98493600902281c6228c915804c830d549055a52ddbbff9836&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+> ⚠️ Data sent via **HTTP** is **plain text**, susceptible to eavesdropping. In contrast, **HTTPS** **encrypts** the data for security.
+
+
+> 💡 You can see the data is in plain text , try `wireshark` to capture network traffic.
+
+
+### Certificates in depth
+
+
+[bookmark](https://youtu.be/r1nJT63BFQ0?si=jZabJk-eyt1laHCZ)
+
+
+Certificates can be bought from **Certificate Authorities** (CA) like GoDaddy, Amazon etc. but there is popular and reliant option [certbot](https://certbot.eff.org/). Installation is pretty straight forward
+
+
+# Frontend Deployment
+
+
+---
+
+
+**Method 1** - Drag and Drop on Vercel, Netlify (Free CDNs)
+
+
+Since the HTML, CSS, JS or React Code is same for every user, it is simply copied over pop servers of CDNs around the globe. 😄 Do note that’s not the case in NextJS.
+
+
+**Method 2** -  Run `npm run dev` on the EC2 server. An ugly way to do it.
+
+
+
+**Method 3** -  S3/Creating your own CDN like Vercel, Netlify.
+
+
+
+**Method 4** - ec2 instances? (Does this fix cors?)
+
+
+**Below is code used for the practice**
+
+
+[link_preview](https://github.com/100xDevs-hkirat/week-10)
+
+
+**Backend/Server Code** - When we enter `localhost:3000` , the default route or resource requested is `index.html` . This can be server simply by creating `public` folder and adding the code below.
+
+
+```java
+app.use(express.static("public"));
+app.use("/*", (req, res) => {
+    res.sendFile(path.join(__dirname, "/public/index.html"))
+})
+```
+
+
+**Frontend Code** - We cannot do `npm run dev` on production. Actually we need HTML, CSS, JS that can be spit out to every user. To create that run `npm run build` , which will spit out the required code in `dist` folder.
+
+
+> 💡 Here’s a catch you cannot directly run the index.js in dist to test it. It has to be server on a server.
+
+
+To locally serve on server we can use a library called serve.
+
+
+ 
+
+
+```bash
+npm i -g serve # To install globally
+serve # To start serving, make sure you are in that dist folder
+server -p 5173 # To change the port
+```
+
+
+### Full Stack on 1 Port
+
+
+Basically, we are hosting frontend and backend on same port. Run the command below to achieve the same, make sure to add this to the scripts. This long command is nothing but combination of many commands in single line.
+
+
+```bash
+"start" : "cd ../admin-client && 
+npm run build && 
+rm -rf ../server/public && 
+mkdir -p ../server/public && 
+mv ./dist/* ../server/public && 
+cd ../server && node index.js"
+```
+
+
+To start the npm using pm2, run the command below
+
+
+```bash
+pm2 start npm -- start
+```
+
+
+> ⚠️ Please note that this method is not the recommended approach for deploying both the frontend and backend. Its primary benefit is avoiding CORS (Cross-Origin Resource Sharing) errors, which are typically addressed in a production environment by implementing strict CORS policies and deploying the frontend and backend as separate entities.
+
+
+# To be continued
+
+
+---
+
+
+🚀  Implementation URL
+
+1. Nginx PORT 3000 - [http://ec2-13-48-5-59.eu-north-1.compute.amazonaws.com:3000](http://ec2-13-48-5-59.eu-north-1.compute.amazonaws.com:3000/)
+2. Nginx PORT 3001 - [http://ec2-13-48-5-59.eu-north-1.compute.amazonaws.com:3001](http://ec2-13-48-5-59.eu-north-1.compute.amazonaws.com:3001/)
+3. SSL + Domain + Full Stack Course Deployment- [https://dev1.codesleepcode.com](https://dev1.codesleepcode.com/)
+
+The frontend deployment mentioned above works best only with ReactJS apps, since there is no server side rendering. But NextJS does Server Side Rendering. 
+
+If this sounds little overhead, will be continued in 10.2
+
+
+> ⚠️ We can use `httponly` cookie for authentication to be `xss` safe.
+
