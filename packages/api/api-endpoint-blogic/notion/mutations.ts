@@ -148,11 +148,33 @@ async function generateFileAndFolder({
     content ? content : ""
   );
 }
-function getMarkdownContent(mdblocks: MdBlock[], n2m: NotionToMarkdown) {
+export function getMarkdownContent(mdblocks: MdBlock[], n2m: NotionToMarkdown) {
   const mdString = n2m.toMarkdownString(mdblocks);
   console.log(mdString);
   if (mdString.parent) {
     return mdString.parent;
   }
   return undefined;
+}
+
+type generateSinglePageFileType = {
+  content?: string;
+  pageName: string;
+  rootRoute: string;
+};
+export async function generateSinglePageFile({
+  rootRoute,
+  pageName,
+  content,
+}: generateSinglePageFileType) {
+  await fs.promises.mkdir(
+    path.join(process.cwd(), `./pages/${rootRoute}/${pageName}`),
+    {
+      recursive: true,
+    }
+  );
+  await fs.promises.writeFile(
+    path.join(process.cwd(), `./pages/${rootRoute}/${pageName}.mdx`),
+    content ? content : ""
+  );
 }
