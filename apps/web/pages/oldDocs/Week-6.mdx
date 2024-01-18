@@ -1,0 +1,643 @@
+
+## Recoil
+
+> 🚧 Concepts in detail are covered here [Adv. State Management](https://www.notion.so/9dfc301d21144640b0bd2adbdf90a21b) 
+
+
+## Existing State Management
+
+
+---
+
+
+So far state was defined, inside the component, due to which we can’t pass it up to the parent, rather only down to the children.
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/cb8017a6-2c6d-47aa-ae86-b88bfa757fd4/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150720Z&X-Amz-Expires=3600&X-Amz-Signature=e7f0e801685a5c98a6b1c1fbedbdffcebb9dfe2101c822a87305aa36e2350f3b&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+So the **first UGLY way around** is to have all the states in App.jsx(the root parent component) and keep passing it down to children. Technically, rolling up the state up to App.jsx and re-rendering on state change.
+
+
+> 💡 UGLY way – Rolling up all the states to the App.jsx(Root Parent) and on state change it triggers re-render.
+
+
+## Better State Management
+
+
+---
+
+
+Issue with above solution is
+
+1. Defining **all states at parent** are hard to maintain.
+2. Useless **re-rendering** of all components.
+3. **Prop-Drilling** : Keep passing the props down the tree, even if the child between doesn’t need it.
+
+> 💡 The **Context API** only solves prop-drilling issue, but **Recoil** solves both prop-drilling and re-rendering (by rendering only the necessary components).
+
+
+Having a global state and using state management libraries like `recoil` makes life easier.
+
+
+Some state management libraries are
+
+1. **Zustand** : The oldest.
+2. **Redux** : Popular before recoil.
+3. **Recoil** : The Open Source Choice & The Most Popular NOW!!
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/57e95154-b2ff-4d4c-970b-ff7f39984c1c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150720Z&X-Amz-Expires=3600&X-Amz-Signature=68cffd1848ed7c2dc9d36fd205e1cb62c9fec434ebcd645d8c24ef2f07d68b3b&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+> That separate folder having all states is usually called `store`
+
+
+## Recoil
+
+
+---
+
+
+Below are the steps, else [**Must Read Doc**](https://recoiljs.org/docs/introduction/getting-started)
+
+
+```typescript
+// Install
+npm install recoil
+```
+
+
+```typescript
+// Wrap the component
+import React from 'react';
+import {
+  RecoilRoot,
+  atom,
+  selector,
+  useRecoilState,
+  useRecoilValue,
+} from 'recoil';
+
+function App() {
+  return (
+    **<RecoilRoot>**
+      <CharacterCounter />
+    **</RecoilRoot**>
+  );
+}
+```
+
+
+```typescript
+// Similar to state
+const textState = atom({
+  key: 'textState', // unique ID (with respect to other atoms/selectors)
+  default: '', // default value (aka initial value)
+});
+```
+
+
+**Selectors** = Sub-atom/part of an atom. Basically the idea is if we get value from the atom we get everything, but if we want only specific value that from the atom we use selectors.
+
+
+> 💡 Instead of `<RecoilRoot></RecoilRoot>` in app.jsx we can put in main.jsx.
+
+
+> ⚠️ Selector can be combination from multiple atoms
+
+
+In short
+
+- **Atom** = State
+- **Selector** = Sub-part of the atom.
+- **To set value** :  `const setUser = useSetRecoilState(userState)`
+- **To get value** : `const user = useRecoilValue(userState)`
+
+> 🔥 It is crucial to ensure that a component subscribes to the value only it requires.
+
+
+## Typescript by Mosh
+
+[bookmark](https://youtu.be/d56mG7DezGs)
+
+
+## Introduction
+
+
+---
+
+
+**JavaScript** – Undisciplined kid uses dynamic typing.
+
+
+**Typescript** – Disciplined Kid uses static typing. In short, Typescript is JavaScript with type checking.
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/e647b33a-fc4e-46bc-9b57-19b6a428a346/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150721Z&X-Amz-Expires=3600&X-Amz-Signature=cf9c76ba4735545901ce6d840e6d4bbae40d65946e71d3d91aa7da641fa8945a&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/367dd5e5-b46f-4345-907d-c1d5147c1f7c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150721Z&X-Amz-Expires=3600&X-Amz-Signature=69f79a9bb977ba08b11645a122f491a886be9f8309a8f0cb7aacbf509ca7d212&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+## Getting Started
+
+
+---
+
+
+**Installation** : `npm i typescript` 
+
+
+**Version Check** : `tsc -v`, “tsc” stands for Typescript Compiler
+
+
+**Compilation** : `tsc filename.ts`
+
+
+**Default Compilation Version** – ES5
+
+
+**tsconfig.json** : `tsc --init` 
+
+
+> **target** : Specifies Javascript Version.  
+> **rootDir** : location where source file ./src  
+> **outDir** : compilation output file `./dist`. Use `tsc` to compile instead of `tsc filename.ts`  
+> **removeComments** : self explanatory  
+> **noEmitOnError** : doesn’t compile if errors in ts file.
+
+
+## Debugging
+
+
+---
+
+
+For debugging machines need sourceMap file, which can be generated setting 
+
+
+> `sourceMap: true` Generates source map
+
+
+Create and launch `.json` file in debug.
+
+
+Add this line `"preLaunchTask": "tsc: build - tsconfig.json"`
+
+
+
+## Built in Types
+
+
+---
+
+
+**Basic Types**
+
+
+```typescript
+let sales: number = 12_000;
+let course: string = 'Typescript';
+let is_published: boolean = true;
+
+// Annotations are optional, it can auto-detect as well
+let sales = 12_000;
+let course = 'Typescript';
+let is_published = true;
+```
+
+
+**Any**
+
+
+```typescript
+let level; // any type
+level = 1;
+level = 'a';
+
+function render(document: any){
+	console.log(document);
+}
+```
+
+
+> `noImplicitAny: true` To allow any type to return implicitly by funciton.
+
+
+**Arrays** : JavaScript **array** can have the variety of types `[ 1, 2, '3' ]`
+
+
+```typescript
+let numbers: number[] = [1, 2, 3]
+let numbers = [1, 2, 3] // Auto-detects the number type
+let numbers; // Any type
+```
+
+
+
+**Tuples** : way to explicitly create of array of multiple type, `let user: [number, string] = [1, 'Mosh]`
+
+
+> 😂   Keep tuples like couples, I mean only two like key value pairs as it is best practice.
+
+
+```typescript
+let user: [number, string] = [ 1, 'Madhav' ];
+user.push(1) // Be aware of this
+```
+
+
+**Enums**, list of related constants, or a way to define multiple constants in a single line. Putting `const` before makes compiled code much concise to read.
+
+
+```typescript
+// use PascalCase
+enum Size{
+	Small, // default value = 0
+	Medium, // default value = 1
+	Large // default value = 2
+}
+
+let selectedSize: Size = Size.Medium
+```
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/cf5c062f-984f-45f3-b26f-0a52a1a984ea/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150721Z&X-Amz-Expires=3600&X-Amz-Signature=4999cf447f65a5f4015522297c59d0756558bd51fe5d9b31712314c8959e965b&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+## Function
+
+
+---
+
+
+We can explicitly mention the parameter and return type.
+
+
+> `noUnusedParameters` : To avoid, definition of parameters unsed.  
+> `noImplicitReturns` : To avoid, JS returning undefined by default.  
+> `noUnusedLocals` : Avoid unused local variables.
+
+
+```typescript
+function calculateTax(income: number, taxYear = 2022): number {
+	if(taxYear < 2022)
+		return income*1.2;
+	return income*1.3;
+}
+```
+
+
+> ⚠️ Early work-around for passing a default value to a function `taxYear || 2022` and In JS we can pass any number of arguments to a function, irrespective of number of parameters.
+
+
+## Objects
+
+
+---
+
+
+As JS objects are dynamic and shape can change, on the way, but in TS we have to explicitly define the shape of the object. 
+
+
+```typescript
+let employee: {
+	readonly id: number, // can't modify the value later.
+	name: string,
+	gender?: string // this makes it optional
+	retire : (date : Date) => void
+}
+```
+
+
+## Advanced Types
+
+
+---
+
+
+**Type Alias** : To define custom type, like for Object or Object Properties. DRY
+
+
+```typescript
+type Employee = {
+	readonly id: number, // can't modify the value later.
+	name: string,
+	gender?: string // this makes it optional
+	retire : (date : Date) => void
+}
+
+let employee: Employee = {
+	id = 1,
+	name = 'Madhav',
+	retire = (Date) => console.log(Date)
+};
+```
+
+
+**Union Types** : To pass and handle multiple types.
+
+
+```c++
+function kgToLbs (weight: number | string): number { 
+	// Narrowing - Without if-else we see properties common to both
+	if (typeof weight 'number') 
+		return weight * 2.2; 
+	else 
+		return parseInt(weight) * 2.2;
+}
+
+kgToLbs(10);
+kgToLbs('10');
+```
+
+
+**Intersection** **Types** : 
+
+
+```typescript
+type Draggable = {
+	drag: () => void
+}
+
+type Resizable = {
+	resize: () => void
+}
+
+type UIWidget = Draggable & Resizable
+
+let textBox: UIWidget = {
+	drag: () => {}
+	resize: () => {}
+}
+```
+
+
+**Literal Type** : To limit the values assign to a variable. For exact or specific values.
+
+
+```typescript
+type Quantity = 50 | 100
+let quantity: Quantity = 50;
+
+type Metric = 'cm' | 'inch'
+let metric: Metric = 'cm';
+```
+
+
+**Nullable Types** : 
+
+
+```typescript
+function greet(name: string){
+	console.log(name.toUpperCase())
+}
+
+function greet(name: string | null | undefined){
+	if(name)
+		console.log(name.toUpperCase());
+	else
+		console.log('Hola!');
+}
+
+greet(undefined)
+```
+
+
+> `strictNullChecks` : auto enabled, avoid passing null
+
+
+**Optional Chaining** :  `?` Using this operator.
+
+
+```typescript
+type Customer = {
+	birthday: Date
+}
+
+function getCustomer(id: number): Customer | null { 
+	return id === 0 ? null : { birthday: new Date() }
+}
+
+console.log(customer?.birthday?.getFullYear())
+
+// Optional element access operator
+customers?.[0]
+
+// Optional call access operator
+let log: any = null;
+log?.('a')
+```
+
+
+## Typescript
+
+
+
+
+
+> 🚧 Basics/Fundamental notes of Typescript 👉 [Typescript by Mosh](https://www.notion.so/7f17df8e32504486a2336b2c64397f52) 
+
+
+## Why TS ?
+
+
+---
+
+1. Typescript is a superset of JS
+2. Allows Static Typing
+3. Makes your code more strict
+
+```c++
+// Static Typing C++
+int x = 10;
+**x = "Hello" // ERROR**
+```
+
+
+```javascript
+// Dynamic Typing JS
+let x = 10;
+x = "Hello";
+```
+
+
+```javascript
+// Static Typing TS
+let x: number = 10;
+**x = "Hello" // ERROR**
+```
+
+
+> ⚠️ Typescript code never run in browser, rather it is converted/compiled/transpiled into JavaScript, which eventually runs in browser. Thus, only JavaScript runs at the end.
+
+
+## Getting Started
+
+
+---
+
+
+**Function** : We have to clearly mention data type of argument and what function returns.
+
+
+```typescript
+function sum(first: number, second: number): number{
+	return a + b
+}
+```
+
+
+**Calculator Exercise**
+
+
+```typescript
+function calculate(a: number, b: number, type: string): number{
+	if(type === 'sum') return a + b;
+	if(type === 'sub') return a - b;
+	if(type === 'mul') return a * b;
+	if(type === 'div') return a / b;
+	return -1
+}
+```
+
+
+**Allows only specific strings as parameter**
+
+
+```typescript
+function calculate( a: number, b: number, **type: "sum" | "sub" | "div" | "mul"**): number{
+	if(type === 'sum') return a + b;
+	if(type === 'sub') return a - b;
+	if(type === 'mul') return a * b;
+	if(type === 'div') return a / b;
+	return -1
+}
+```
+
+
+> 🚧 Basics/Fundamental notes of Typescript 👉 [Typescript by Mosh](https://www.notion.so/7f17df8e32504486a2336b2c64397f52) 
+
+
+**module** : `commonjs` allows old school imports like `const axios = require(’axios’)` and `es6` allows modern imports like `import axios from 'axios'`
+
+
+## Interfaces
+
+
+---
+
+
+Interface is like defining the shape of a custom data type.
+
+
+Interfaces can 
+
+- use other interfaces
+- extend interfaces
+- can be implemented by classes.
+
+```typescript
+// Defining Interfaces
+interface PersonInterface {
+	name : string,
+	age : number,
+}
+
+// Using Inside Function
+function greet(person: PersonInterface): string{
+	return "Hello" + Person.name + ", you are " + Person.age + " yrs old"
+}
+```
+
+
+```typescript
+// Using Other Interfaces
+interface PersonGenderProperties {
+	gender: string;
+	orientation: string;
+	pronouns : string;
+}
+
+interface PersonInterface {
+	name : string,
+	age : number,
+	genderProps: PersonGenderProperties
+}
+```
+
+
+```typescript
+// Extending Interface
+interface PersonGenderProperties {
+	gender: string;
+	orientation: string;
+	pronouns : string;
+}
+
+interface PersonInterface extends PersonGenderProperties{
+	name : string,
+	age : number,
+}
+```
+
+
+```typescript
+
+// Implementing Classes using Interface
+interface PersonInterface {
+	name : string,
+	age : number,
+	greet() : string
+}
+
+
+class Person implements PersonInterface{
+	name: string,
+	age: number;
+	
+	constructor(name: string, age: number){
+		this.name = name;
+		this.age = age;
+	}
+	
+	greet(){
+		return "Hi" + this.name;
+	}
+}
+```
+
+
+## Type
+
+
+---
+
+
+Types and Interfaces are mostly used interchangeably, but if we are looking for the features below we use type
+
+1. `type` can’t extend like `interfaces`
+2. `type` also allows doing union `&` and intersection `|`
+3. Interfaces can be implemented by classes.
+
+```typescript
+interface Circle{
+	radius: number;
+}
+
+interface Square{
+	side: number;
+}
+
+interface Rectangle{
+	side: number;
+	height: number;
+}
+
+type Shape = Rectangle | Circle | Square; // OR - can be one of these
+type Shape = Rectangle & Circle & Square; // AND - UNION of properties
+```
+
+
+> 💡 Enum is short for "**enumerations**", which means "**specifically listed**".
+

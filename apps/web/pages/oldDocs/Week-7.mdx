@@ -1,0 +1,323 @@
+
+## Custom Hooks, Generics, Zod
+
+## Array – Typescript
+
+
+---
+
+
+**Ways to define array**
+
+
+```typescript
+// 1st Method
+function getFirstElement(arr: **number[]**) {
+  return arr[0]
+}
+
+// 2nd Method
+**type NumberArray = number[]**;
+function getFirstElement(arr: **NumberArray**) {
+  return arr[0]
+}
+
+// 3rd Method
+interface User{
+	name: string,
+	age: number
+}
+
+type Users = **user[]**;
+```
+
+
+**An array with multiple data types**
+
+
+```typescript
+function getFirstElement(arr: **(number | string)[]**) {
+	return arr[0]
+}
+```
+
+
+> 💡 Typescript can automatically interfere return type. But ideal is to always explicitly define it.
+
+
+## Generics – Typescript
+
+
+---
+
+
+**Below is a problem**
+
+
+```typescript
+function getFirstElement(arr: **(number | string)[]**) {
+	return arr[0]
+}
+
+let ans1 = getFirstElement([1, 2, 3])
+let ans2 = getFirstElement(["one", "two", "three"])
+
+**ans2.toLowerCase() // Property toLowerCase doesn't exsists on type number| string**
+```
+
+
+**Solution : Using Generics**
+
+
+```typescript
+function getFirstElement**<T>**(arr: **T[]**) {
+	return arr[0];
+}
+
+let ans1 = getFirstElement([1, 2, 3])
+let ans2 = getFirstElement(["one", "two", "three"])
+
+
+**ans2.toLowerCase() // Think of T as Any Type**
+```
+
+
+> 💡 This also works the same. `let ans2 = getFirstElement<string>(["one", "two", "three"])`
+
+
+😰 **Generics** refer to a programming concept that allows the creation of classes, interfaces, or methods that can work with different data while maintaining type safety. In other words, generics provide a way to write reusable code that can operate on various data types without sacrificing type checking at compile time.
+
+
+🚀 The Swapper Exercise : a, b must be of the `same type both`.
+
+
+```typescript
+function swap<T>(**a: T, b: T**): [T, T] { // without [T, T], returns number[], want [number, number]
+  return [b, a];
+}
+
+console.log(swap<number>(1, 2)); // <number> is optional
+```
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/58ad3b4d-6c66-4c73-802a-5583ebaf594b/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150743Z&X-Amz-Expires=3600&X-Amz-Signature=9c9227e22e50839559d36a7fee83aa0dc983284ac33f653f6d4f09cdde006211&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+🚀 The Swapper Exercise : a, b must be of the `different type both`.
+
+
+```typescript
+function swap<T, P>(**a: T, b: P**): [P, T] { 
+  return [b, a];
+}
+
+console.log(swap<number, string>(1, "2")); // <number, string> is optional
+```
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/39eb2922-b679-45bd-a099-a4221930392d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150743Z&X-Amz-Expires=3600&X-Amz-Signature=a305b4c84910e00cde10d6fcbe017eb6a2b0d91effc7daffac938cb97bb0aade&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+## Partial – Typescript
+
+
+---
+
+
+Making all arguments optional.
+
+
+```typescript
+interface Todo{
+	title: string;
+	description: string;
+	id: number;
+	done: boolean
+}
+
+type UpdateTodo = Partial<Todo> // Now if updateTodo is passed then all args optional.
+```
+
+
+## Zod
+
+
+---
+
+
+It is used for **Backend Validation**. Bunch of checks on the data sent by the client to server, if it is not correct can break your server. 
+
+
+> 💡 You may think Frontend validation is enough, but one can hit requests using Postman 😎
+
+
+Manually entering the checks using if-else is a complete nightmare. So we use libraries like 
+
+1. `TRPC` - allows adding string backend validation and reuse it on frontend as well.
+2. `Zod` - Will be using here.
+3. `express-validator` - does the same job.
+
+Despite all this, backend can still go down. **Process Managers** libraries like `forever`, `pm2`  restarts the server automatically.
+
+
+```typescript
+**import {z} from "zod";**
+
+**let titleInputProps = z.object({
+	title: z.string().min(1), 
+	description: z.string().min(1)
+})**
+
+router. post( '/todos', authenticateJwt, (req, res) => {
+	const parsedlnput = titleInputProps.**safeParse**(req.body) ;
+	if (!parsedlnput.success) {
+		return res.status(411).json({
+			msg: parsedlnput.error
+		})
+	let title = parsedlnput.data.titte;
+	let description parsedlnput.data.description;
+}
+```
+
+
+> ⚠️ `Typescript` does compile time checks (when building application). `Zod` does runtime checks (when app is running)
+
+
+## Custom Fetch Hooks
+
+
+---
+
+
+Creating your own hooks using the existing react hooks. Technically, a function starts with `use` and uses react hook is a custom hook. `SWR` is another library to handle custom fetch hooks. To be continued.
+
+
+## Monorepos
+
+## Monorepos
+
+
+---
+
+
+**Mono** stands for “_single_” and **repo** is short of “_repository_”. When we put codebase of Web App, Mobile App and Backend Server all in single repository/folder. It is called **Monorepo**.
+
+
+> 💡 Monorepo - Multiple apps in one repository.
+
+
+![Source : Link](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/3013a0e3-d228-4f9a-921e-ccacb7dc4f5b/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150744Z&X-Amz-Expires=3600&X-Amz-Signature=fd125b2ff4eb944ef10e2709ca7f1d32ba9e220f70467807a119c71ee502c1b4&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+[bookmark](https://youtu.be/9iU_IE6vnJ8)
+
+
+## Why modules/packages ?
+
+
+---
+
+- Re-usable code
+- Isolation/Separation of concern
+- Teams can work on modules independently
+
+## Zod
+
+
+---
+
+
+`Zod` - A library to perform backend and frontend validation. 
+
+
+To perform frontend validation, we use `Zod Inference`, which is automatically creates “type” out of Zod Object.
+
+
+```typescript
+// Creating Zod Object - Using this we can do the backend validation.
+const signupInput = z.object({
+	username: z.string(),
+	password: z.string()
+})
+```
+
+
+```typescript
+// Creating type out of object for frontend validation
+type signupParams = z.infer<typeof signupInput>;
+
+
+
+```
+
+
+```typescript
+// Similar to this
+type signupParams = {
+	username : string,
+	password : string
+}
+```
+
+
+> ⚠️ Every folder (like in class these were common, client, server) must have package.json and tsconfig.
+
+<details>
+<summary>Why can’t we directly import the file from common ?</summary>
+
+On compilation typescript, complains file is outside of `src` folder.
+
+
+</details>
+
+
+## Publish NPM Package
+
+
+---
+
+
+> 🔥 Pre Monorepo era, we publish the package to npm and then npm install. There wasn’t intercommunication of packages.
+
+
+Commands used
+
+- `npm login`
+- `npm publish --access=publish`
+- `npm pack` – Creates a zip file of what is going to be published.
+- `.npmignore` – To avoid publishing some folders.
+- `npm version major/minor/patch` – This is a pretty cool thing, Read Semantic Versioning.
+
+> ⚠️ You can’t publish over the previous, version.
+
+
+As mentioned, it is not the good practice to ship complete typescript code. But to reuse/use package we need the “_types declaration_”. So we have `d.ts` file, which can be generated adding `declaration: true` in tsconfig.
+
+
+> 💡 `.d.ts`  = No JavaScript Logic code, only “_types declaration_”
+
+
+## Mono Repos
+
+
+---
+
+
+Publishing the package to `npm` and then importing it. Sucks !! It is complete ugly way. So we have Mono Repos, again, to make our life easier.
+
+
+Three workarounds to handle the mono repos, in better way.
+
+- `turborepo` : The most popular build system for JS and TS codebases. This jargon is good.
+- `lerna` :
+- `npm workspaces` :
+
+**The answer you are looking for** 👇🏻
+
+
+If you are thinking, why are we making this all complex and overwhelming. It is not, it simply looks.
+
+So far the application you have built/thought is `todo`, people working on it is `only you`, and number of users is `1`. But real life applications are opposite, they are `complex`, a `team works`, a `million` users. When developers were in the way of it, there were problems and this is the solution.
+
+If you carefully see, these are just a bunch of folders and files here and there. Just to manage code.
+

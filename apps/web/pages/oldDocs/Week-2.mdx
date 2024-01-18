@@ -1,3 +1,1200 @@
 
+## Express Deep Dive
+
+# Deep Dive into Express
+
+
+## Foundation
+
+
+---
+
+
+**Full Stack** : Backend + Frontend. 
+
+
+> 💡 Expertise in either Backend or Frontend is sufficient to crack a job. Both aren’t mandatory.
+
+
+**4 Essential Parts** of Backend
+
+1. HTTP Servers
+2. Authentication
+3. Databases
+4. Middlewares
+
+**HTTP Servers** Components
+
+1. Request Methods
+2. URL Route
+3. Query Parameter, Headers, Body
+4. Status Codes
+5. Response HTML, Text, JSON
+
+**Pre Internet Days** : An era when computers couldn’t communicate with another computers. 
+
+
+There were powerful computers in top universities like UCLA, MIT capable of computing complex algorithms like nowadays ChatGPT. Say you thought of a great idea or great question, that can only be computed on a computer at MIT. But you're sitting on your couch with a laptop can’t do that, because there was no way for your computer to communicate with MIT’s computer. 
+
+
+> 💡 Pre-Internet Days were days without Internet, or computers without communication.
+
+
+**Client Server Model** : Later we realized that we can connect computers with wires, now wirelessly as well. This enabled our computer to talk to another computer around the world. 
+
+
+When we ask a question in ChatGPT, we send a **Request** to their powerful machine and the answer we get is a **Response**. In this case, your computer is **Client**, and ChatGPT's computer is **Server.**
+
+
+> 💡 Asking question to ChatGPT is a “Request” from your computer (Client)  
+> Answer received from ChatGPT is a “Response” from their computer (Server)
+
+
+![Source : Link](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/e5dbbfbe-6942-4493-83e1-dcae034cf135/request-response.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150603Z&X-Amz-Expires=3600&X-Amz-Signature=aef56f731f2fe1b4de165236e275835094f4d2bde327ca891fb866c596a916af&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+**Protocols** : Communication between computers may sound simple, but there must be a set of rules to follow for effective communication between them. These rules are Protocols. 
+
+
+Like on airport, there are set of rules that must be followed in order to get onboarded, which is Web Check-in, Luggage Check-In, Security Check. Similarly, for their computers to effectively communicate, we have certain set of rules and one of the popular protocol is **HTTP Protocol**.
+
+
+> 💡 Like there is a protocol (set of rules) before we onboard in a plane, there is a popular HTTP Protocol for computers to communicate between each other over internet
+
+
+**Another Reason Why do we need servers ? Apart from speed.**
+
+
+Except these are powerful, For apps like Instagram, YouTube, LinkedIn, the content must be delivered at the moment, which should be new, personalized and updated. All this needs to stored somewhere, which are servers. Thus, we require a way to communicate with them.
+
+
+**Actual request sent to ChatGPT server**
+
+
+![Screenshot_2023-06-19_at_11.53.16_AM.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/de68b75d-eb76-4fd9-954c-7be271a27847/Screenshot_2023-06-19_at_11.53.16_AM.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150603Z&X-Amz-Expires=3600&X-Amz-Signature=82e0a9726a4df3e579a2fe3b9841d0c90e00b7994a6ac68265899dd21c6a7f5a&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+## HTTP Server Part 1
+
+
+---
+
+
+**URL** : As we require a number to call a person, an address to send a courier, similarly we require URL (Uniform Resource Locator) to send a request to a specific server.
+
+
+> 💡 URL (Address), say for ChatGPT server is “chat.openai.com”
+
+
+**Route/Path** : Now we know the address, but the server can do multiple things or in terms of programming it can execute multiple functions, so route tells which actions or code should be executed.
+
+
+> 💡 Route (which action), in “chat.openai.com/backend-api/”, “backend-api” is route.
+
+
+**Query Param, Header, Body** : All three are ways to send data to backend. Below is query parameter only.
+
+
+![Source : Link](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/addf2e52-9854-4694-8034-f99eba8fe5b2/query_string_components.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150604Z&X-Amz-Expires=3600&X-Amz-Signature=8d0fc3d9f67d8740f1718f0e516ca97d4d7c3ec7e7e388d28351f2417c6e7efd&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+**Request Method** : It is like mentioning what this request intended for, to create, read, update or delete data. In short CRUD.
+
+
+![Source : Link](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/c751cd08-78c8-4b2d-8a2d-5fa84694a2b8/http-method-for-restful-apis.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150603Z&X-Amz-Expires=3600&X-Amz-Signature=9f4b62bbf1f50426901aadfbfbc5dd2476ecb60c5a0aea1cb58be8be641be5ea&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+> 💡 Default Request Method in browser is GET always. The moment you hit Enter, GET request sent.
+
+
+> ⚠️ Although you can manage POST, PUT, DELETE via GET method using different routes, but that is not the ideal way or best practices.
+
+
+> ⚠️ **`header`**, **`body`**, **`status codes`**, **`ports`**, **`reponse(HTML, JSON, TXT)`**, **`CROS`** are covered in next part.
+
+
+## Creating Server using Express
+
+
+---
+
+1. Run `npm init -y`, this initializes the folder and creates `package.json`
+
+> 💡 `package.json` is like Project’s KYC (name, description, author etc) + dependencies (list of external libraries used) + scripts (commands for testing, debugging etc.)
+
+1. Command to run, any JS file like `index.js` is `node index.js`
+
+> 💡 `npm` (Node Package Manager) is a PlayStore of Node.js libraries.
+
+1. Importing Libraries, like we used `fs` library `const fs = require("fs");`  to read/write to a file, similarly we will use `Express` to create our own http server, the only catch is express library is not shipped with Node.js by default, so we have to install using command `npm install express`
+
+> 💡 Think of `libraries` as chrome extensions or plugins that adds extra functionality and all we need to know is how to use, not how they are internally implemented. 
+
+
+> 💡 `node_modules` , this extra folder is like a luggage of guest who comes home to stay longer, that contains his essentials. Technically, this contains all libraries Express needs or express’s essential luggage. 
+
+
+> 💡 `package-lock.json`  stores the exact version of libraries being used in local environment. This is useful when I want to app on another machine with exact same versions.
+
+
+> 💡 `^` in `^4.18.2` means any version greater than this will work or can be installed, but not less than that.
+
+1. Grab the boilerplate from [official-website](https://expressjs.com/en/starter/hello-world.html) or down below.
+
+```javascript
+const express = require('express')
+const app = express()
+const port = 3000
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+```
+
+
+## Adding Route
+
+
+---
+
+
+Adding Route, `/handleSum` that returns the sum of first 100 natural numbers. We can have as many routes we wish to have.
+
+
+```javascript
+const express = require('express')
+const app = express()
+const port = 3000
+
+**function handleSum(req, res){
+  var finalSum = 0;
+  for(var i = 0; i < 100; i++){
+    finalSum = finalSum + i;
+  }
+  var ans = `Sum is ${finalSum}`
+  res.send(ans);
+}
+
+app.get('/handleSum', handleSum)**
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+```
+
+
+![Screenshot_2023-06-21_at_5.41.54_PM.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/ad3c1c9a-44c7-4bae-ad0a-42de4eb97ec7/Screenshot_2023-06-21_at_5.41.54_PM.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150605Z&X-Amz-Expires=3600&X-Amz-Signature=9d3d054ba0da02d5fd74c10820d4863c824533462173d91cf4c4f310529ba414&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+> ⚠️ `res.send()` method in Express expects a **string** or a **buffer**, not a number, either use `sum.toString()` or convert it to string prior in separate variable like above.
+
+
+## Adding Query Parameter
+
+
+---
+
+
+Query Parameters are followed by a route and `?`, here we added a parameter name `counter` , to route handle sum `/handleSum?counter=10` that returns the sum up to that many numbers. We can have as many parameters we wish to have, separate them by `&`
+
+
+```javascript
+const express = require('express')
+const app = express()
+const port = 3000
+
+function handleSum(req, res){
+  var finalSum = 0;
+	**var upTo = req.query.counter;**
+  for(var i = 0; **i < upTo**; i++){
+    finalSum = finalSum + i;
+  }
+  var ans = `Sum is ${finalSum}`
+  res.send(ans);
+}
+
+app.get('/handleSum', handleSum)
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+```
+
+
+![Screenshot_2023-06-21_at_5.44.19_PM.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/5fad61c6-df9a-419f-a33d-e283fe869698/Screenshot_2023-06-21_at_5.44.19_PM.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150605Z&X-Amz-Expires=3600&X-Amz-Signature=bc59d9ea69b2bb2ca3f3bbdf61bf6adfa20362e11314c57a08eb704c47113038&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+## Extra Nuggets
+
+
+---
+
+
+**What if I do handle all POST, PUT, DELETE via GET ?**
+Everything will be get stored in browser history, in case password is sent. It will be get stored.
+
+
+**I am getting 304 response, what does that mean ?**
+When you receive a 304 response, it means that the requested resource has not been modified on the server since the browser's last access, and the browser can use its cached version of the resource instead of downloading it again.
+
+
+**Are there routes for every user on Instagram ?**
+No, we use catch all route, looks like `app.get('/:username', searchUser)`
+
+
+## Backend Systems
+
+## HTTP Server Part-2
+
+
+---
+
+
+> ⚠️ **`header`**, **`body`**, **`status codes`**, **`ports`**, **`reponse(HTML, JSON, TXT)`**, **`CORS`** are covered along with code. Below is the code we previously worked on in Part 1. We will continue building upon this code.
+
+
+```javascript
+const express = require('express')
+const app = express()
+const port = 3000
+
+function handleSum(req, res){
+  var finalSum = 0;
+	var upTo = req.query.counter;
+  for(var i = 0; i < upTo; i++){
+    finalSum = finalSum + i;
+  }
+  var ans = `Sum is ${finalSum}`
+  res.send(ans);
+}
+
+app.get('/handleSum', handleSum)
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+```
+
+
+## Adding Headers
+
+
+---
+
+
+**Headers** : Think of these like label attached outside the parcel we receive from Amazon, which basically contains the information about the parcel, location, person etc. Similarly, headers in HTTP contains data about request, technically called **meta data**(data about data). To these headers we can add data we wish to like `counter` value in the example below
+
+
+> 💡 Just as the label on a parcel provides details about the package, location, and recipient, HTTP headers provide metadata or information about the request itself.
+
+
+![amazon_parcel.jpg](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/2de443c8-5dfd-4679-a77e-91f7f7e34619/amazon_parcel.jpg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150606Z&X-Amz-Expires=3600&X-Amz-Signature=82ef4ac79de991db5eeb45f0ef62d83a9c0c2ff100d7ccfe8720ae766612b72e&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+Sending `counter` via header, instead of query param.
+
+
+```javascript
+const express = require('express')
+const app = express()
+const port = 3000
+
+function handleSum(req, res){
+  var finalSum = 0;
+**//	var upTo = req.query.counter;
+	var upTo = req.headers.counter;**
+  for(var i = 0; i < upTo; i++){
+    finalSum = finalSum + i;
+  }
+  var ans = `Sum is ${finalSum}`
+  res.send(ans);
+}
+
+// **app.get('/handleSum', handleSum)
+app.post('/handleSum', handleSum)**
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+```
+
+
+POST Request sent from POSTMAN adding header `counter`
+
+
+![Screenshot_2023-06-20_at_7.15.12_AM.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/ec8a9cba-a07b-44e6-896b-780333e94d1b/Screenshot_2023-06-20_at_7.15.12_AM.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150606Z&X-Amz-Expires=3600&X-Amz-Signature=a60b380a2a9001a898e5aee2f8352ec326fdaf55de1d1d98b8870dba6fa3ede6&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+## Adding Middlewares
+
+
+---
+
+
+**Middlewares** : A security check before entering to a mall is a middleware, a card swipe before we entering into lounge is a middleware and a Google login before accessing Gmail is a middleware. 
+
+
+Technically a function that executes before any route or routeHandler, this takes 3 arguments `req`, `res`, `next` and to register or use we need to add `app.use(middleware_function_name)`. We need not to write middlewares from scratch, there do exists some libraries for common usecases.
+
+
+> 💡 Security check at a mall entrance, card swipe at a lounge entrance, and Google login for accessing Gmail are all examples of middleware. A function that will run before any/specific route.
+
+
+![Screenshot_2023-06-20_at_7.18.05_AM.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/ce0f79dd-2bf6-409e-927c-4dab9fd78b3a/Screenshot_2023-06-20_at_7.18.05_AM.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150606Z&X-Amz-Expires=3600&X-Amz-Signature=c6a9cb7f1edfe5556c1b570e6cdc38642b706fc3978df03d60e2914a22515070&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+Example illustrating middleware execution before any route.
+
+
+```javascript
+const express = require('express')
+const app = express()
+const port = 3000
+
+**function middleware(req, res, next){
+	console.log("I run before everything else");
+	next();
+}
+
+app.use(middleware);**
+
+function handleSum(req, res){
+  var finalSum = 0;
+  var upTo = req.headers.counter;
+  for(var i = 0; i < upTo; i++){
+    finalSum = finalSum + i;
+  }
+  var ans = `Sum is ${finalSum}`
+  res.send(ans);
+}
+
+app.post('/handleSum', handleSum)
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+```
+
+
+Middleware **logs the the number of requests** sent since start of server.
+
+
+```javascript
+const express = require('express')
+const app = express()
+const port = 3000
+**var numberOfRequests = 0;**
+
+function middlware(req, res, next){
+	**numberOfRequests = numberOfRequests + 1;
+	console.log(numberOfRequests);**
+	next();
+}
+
+app.use(middlware);
+
+function handleSum(req, res){
+  var finalSum = 0;
+  var upTo = req.headers.counter;
+  for(var i = 0; i < upTo; i++){
+    finalSum = finalSum + i;
+  }
+  var ans = `Sum is ${finalSum}`
+  res.send(ans);
+}
+
+app.post('/handleSum', handleSum)
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+```
+
+
+## Adding Body
+
+
+---
+
+
+**Body** : 95% of data is sent via body, but it needs to be parsed at server-side using middlewares, as it is not an inbuilt feature. Accessing the body without using middlewares results `undefined`
+
+
+![Screenshot_2023-06-21_at_12.05.52_PM.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/473d6cb6-645e-47aa-b8dc-e8dadca12f3e/Screenshot_2023-06-21_at_12.05.52_PM.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150606Z&X-Amz-Expires=3600&X-Amz-Signature=3357e6fcd29a496284dc871fb0f2829486904ff67b2921c2845fc31127565083&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+> 💡 Middleware `express.json()` is inbuilt, In video we have installed `body parser` and used that.
+
+
+```javascript
+const express = require('express')
+const app = express()
+const port = 3000
+
+**app.use(express.json());**
+
+function handleSum(req, res){
+  var finalSum = 0;
+  **var upTo = req.body.counter;**
+  for(var i = 0; i < upTo; i++){
+    finalSum = finalSum + i;
+  }
+  var ans = `Sum is ${finalSum}`
+  res.send(ans);
+}
+
+app.post('/handleSum', handleSum)
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+```
+
+
+```javascript
+// Middleware for parsing JSON data
+app.use(express.json());
+
+// Middleware for parsing "HTML Form" Data or "URL-encoded" data
+app.use(express.urlencoded({ extended: true }));
+```
+
+
+Sending POST request with `counter` in body.
+
+
+![Screenshot_2023-06-21_at_1.26.54_PM.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/77a7fe2a-a4a3-422c-934a-cc34a9402a43/Screenshot_2023-06-21_at_1.26.54_PM.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150606Z&X-Amz-Expires=3600&X-Amz-Signature=c6b2b445fd34f0f46d2a6bbc420d2da2fd61afd6c098eff62cf387a87753829d&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+## Extra Nuggets on body parsing, Middlewares
+
+
+---
+
+
+**Marinating Middlewares**
+
+
+![Screenshot_2023-06-21_at_12.14.20_PM.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/150bc6f9-8049-4d73-8061-78438f612f68/Screenshot_2023-06-21_at_12.14.20_PM.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150606Z&X-Amz-Expires=3600&X-Amz-Signature=5afe13ba76d6fdedf5e672af0e3e7fdff6834bf400aa5f9fb5e0d1001e347d61&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+**Why it doesn’t work out of the box ?**
+
+
+When a request is sent with body, it is typically just a stream of bytes, it’s server-side responsibility to extract and parse data based on it’s type. Thus we need a middleware function that examines the **`Content-Type`**  of the incoming request and parse accordingly.
+
+
+> 💡 Middleware  **`express.json()`** parses **`JSON`** type data. In request header `Content-Type: application/json` 
+
+
+> 💡 Middleware **`express.urlencoded()`** parses **`HTML FORMS`** data. In request header `Content-Type:application/x-www-form-urlencoded` 
+
+
+**What is** **`application/x-www-form-urlencoded`** **content type ?**
+
+
+`application/x-www-form-urlencoded` is a content type used to format data when submitting HTML forms over the web. It is the default encoding type for HTML forms.
+
+
+When you submit an HTML form using the `application/x-www-form-urlencoded` encoding, the form **data is serialised** into a URL-encoded format. This format is a series of key-value pairs, where the keys and values are encoded and separated by an equal sign (`=`), and each pair is separated by an ampersand (`&`).
+
+
+For example, if you have a form with two fields: `name` and `email`, and a user submits the form with the values "John Doe" for the `name` field and "john@example.com" for the `email` field, the resulting URL-encoded form data would look like this:
+
+
+```javascript
+
+name=John%20Doe&email=john%40example.com
+```
+
+
+In the above example, the `space` in the name is encoded as `%20`, and the `@` symbol in the email is encoded as `%40`. 
+
+
+**What encoding for form uploads ?**
+
+
+Other encoding types available, such as `multipart/form-data`, which is used for file uploads.
+
+
+**What is request line ?**
+
+
+HTTP requests consist of a request line, headers, and an optional request body. Typically, consists of three components, Request Method + Request Target + HTTP Version. Example Request line `GET /example.html HTTP/1.1`
+
+
+## Response from server
+
+
+---
+
+
+Server response can have three things, or we can add the things below
+
+1. Status Code
+2. Body
+3. Header
+
+> 🔥 Keep in mind topics/code below are based on **`Sending response from a server`**  NOT **`Sending request to a server`**
+
+
+## Adding Status Code
+
+
+---
+
+
+Every request is not sure to be a success, there can be errors in server side, which lead to failures. These status codes, serves a purpose to inform the browse about what happened to the request, even if all went well.
+
+1. Informational responses (`100` – `199`)
+2. Successful responses (`200` – `299`)
+3. Redirection messages (`300` – `399`)
+4. Client error responses (`400` – `499`)
+5. Server error responses (`500` – `599`)
+
+For more details refer MDN official docs - [Click Here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status).
+Status Codes - [In Short](https://www.restapitutorial.com/httpstatuscodes.html).
+
+
+```javascript
+const express = require('express')
+const app = express()
+const port = 3000
+
+app.use(express.json());
+
+function handleSum(req, res){
+  var finalSum = 0;
+  var upTo = req.body.counter;
+  for(var i = 0; i < upTo; i++){
+    finalSum = finalSum + i;
+  }
+  var ans = `Sum is ${finalSum}`
+  **res.status(404).send(ans);**
+}
+
+app.post('/handleSum', handleSum)
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+```
+
+
+![Screenshot_2023-06-21_at_1.28.46_PM.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/15b35855-f0f4-4561-972c-49df548462e6/Screenshot_2023-06-21_at_1.28.46_PM.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150607Z&X-Amz-Expires=3600&X-Amz-Signature=0d5f72018862c0bb638f7418475a034a4c1fae835933285be1d78fd75d4ce96d&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+> ⚠️ Default status code is 200, which is sent automatically upon `res.send(ans)` 
+
+
+> ⚠️ The way syntax `res.status(200).send(ans);` looks is technically called Function Currying.
+
+
+## Adding Response Body
+
+
+---
+
+
+We can send three types of data in response body.
+
+1. String/Simple Text
+2. JSON (99%)
+3. HTML
+
+**String**/Simple Text : What we are sending so far in `res.send()`
+
+
+```javascript
+const express = require('express')
+const app = express()
+const port = 3000
+
+app.use(express.json());
+
+function handleSum(req, res){
+  var finalSum = 0;
+  var upTo = req.body.counter;
+  for(var i = 0; i < upTo; i++){
+    finalSum = finalSum + i;
+  }
+  var ans = `Sum is ${finalSum}`
+  res.send(ans);
+}
+
+app.post('/handleSum', handleSum)
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+```
+
+
+**JSON :** 99% time JSON, an organized way to send data and process data in frontend.
+
+
+```javascript
+const express = require('express')
+const app = express()
+const port = 3000
+
+app.use(express.json());
+
+function handleSum(req, res){
+  var finalSum = 0;
+  var upTo = req.body.counter;
+  for(var i = 0; i < upTo; i++){
+    finalSum = finalSum + i;
+  }
+  var ans = `Sum is ${finalSum}`
+  **var obj = {
+    sum : ans
+  }
+  res.send(obj);**
+}
+
+app.post('/handleSum', handleSum)
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+```
+
+
+> 💡 If we only want to send JSON, then one can use **`res.json()`** instead of **`res.send()`**
+
+
+**res.json() vs res.send()**
+
+
+**`res.json()`**: This method can send an object or an array and automatically sets the appropriate headers, also converts the input data to JSON format before sending it.
+
+**`res.send()`**: This method can send various types of responses, including plain text, HTML, JSON, and more. It automatically sets the appropriate headers.
+
+
+**HTML** 
+
+
+> ⚠️ In res.send() either put string in single line, for multiple lines use ```
+
+
+```javascript
+const express = require('express')
+const app = express()
+const port = 3000
+
+app.use(express.json());
+
+function handleSum(req, res){
+  var finalSum = 0;
+  var upTo = req.body.counter;
+  for(var i = 0; i < upTo; i++){
+    finalSum = finalSum + i;
+  }
+  var ans = `Sum is ${finalSum}`
+  var obj = {
+    sum : ans
+  }
+  res.send(obj);
+}
+
+app.post('/handleSum', handleSum)
+
+**function handleHTML(req, res){
+  res.send("<b> hi </b>")
+}
+
+app.get('/html', handleHTML)**
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+```
+
+
+> 💡 To send any file directly `res.sendFile(__dirname + "/index.html"`
+
+
+## How servers can talk to servers
+
+
+---
+
+
+We can create servers in 
+
+1. Java using SpringBoot
+2. Python using Django
+3. JavaScript/NodeJS using Express
+
+We can send request from a server(written to any language) to another server(written to any language).
+
+
+![Screenshot_2023-06-21_at_3.07.23_PM.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/69393494-1ff9-4f56-a2e1-004ea4e1d77c/Screenshot_2023-06-21_at_3.07.23_PM.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150607Z&X-Amz-Expires=3600&X-Amz-Signature=bd74d6bc967799a19d0cdd939ada06cf13f9fb67585cb07a2557057f9c95fa06&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+```javascript
+var URL = "http://localhost:3000/handleSum?counter=100"
+var sendObj = {
+	method : "GET"
+}
+function logBody(data){
+	console.log(data);
+}
+function callbackFn(result){
+	result.json().then(logBody);
+}
+
+fetch(URL, sendObj).then(callbackFn)
+```
+
+
+## Assignment Learnings
+
+## Todo List
+
+
+---
+
+
+**Ways to generate Random Unique ID** 
+
+1. **Use counter variable** : Easy and only applicable in the given assignment.
+
+> 💡 $0 ≤ Math.random() < 1$
+
+
+**Using set of characters and verifying inside set** : 100% unique.
+
+
+```javascript
+const usedIds = new Set();
+
+function generateUniqueId(length) {
+  let result = '';
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  const charactersLength = characters.length;
+
+  do {
+    result = '';
+    for (let i = 0; i < length; i++) {
+      result += characters.charAt(Math.floor(Math.random() * charactersLength));
+    }
+  } while (usedIds.has(result));
+
+  usedIds.add(result);
+  return result;
+}
+
+// Usage
+const id1 = generateUniqueId(10);
+console.log(id1);
+```
+
+1. **Date.now()** : Returns the number of miliseconds elapsed since January 1, 1970. But can clash if request arrived sent at same time.
+2. **Using Library** : `uuid`
+
+**Below is correct JSON format, if feel unintuitive** 
+
+
+```javascript
+[
+  {
+    "id": 1,
+    "title": "Complete assignment",
+    "description": "Finish the project assignment by Friday",
+    "completed": false
+  },
+  {
+    "id": 2,
+    "title": "Buy groceries",
+    "description": "Get milk, eggs, and bread from the store",
+    "completed": true
+  },
+  {
+    "id": 3,
+    "title": "Go for a run",
+    "description": "Run for 30 minutes in the park",
+    "completed": false
+  }
+]
+```
+
+
+JSON doesn’t need to be inside `{ }`  it can be inside `[ ]`
+
+
+The property names are enclosed in double quotes " " and their corresponding values can be of various data types, such as numbers, strings, booleans, or even nested objects or arrays.
+
+
+To send the json `res.json()`
+
+
+**Extracting id from catch all route.**
+
+
+`id` in `app.get('/todos/:id', getTodoByID)` is a path variable and extracted similar to query params like **`req.params.id`** and its type is **`string`** , so convert to a Number, like **`Number(req.params.id)`** or pareseInt**`(req.params.id)`**
+
+
+**Iterating over an array of objects, to get index.**
+
+
+```javascript
+// Using findIndex() method to return the index of the found element
+const index = todos.findIndex(todo => todo.id === searchId);
+```
+
+
+**Iterating over an array of objects, to get an object.**
+
+
+```javascript
+// Using find() method to return the found element
+const foundTodo = todos.find(todo => todo.id === searchId);
+```
+
+
+**Deleting an element from an array :** `todos.splice(indexToDelete, 1);`  [MDN Read](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array/splice)
+
+
+**For undefined routes** : Place at the end.
+
+
+```javascript
+app.use((req, res) => {
+  res.status(404).send('Not Found');
+});
+```
+
+
+## Todo List (Hard)
+
+
+---
+
+
+```javascript
+**// Server Boilerplate**
+const express = require('express');
+const fs = require('fs')
+const app = express();
+
+const bodyParser = require('body-parser');
+app.use(bodyParser.json());
+
+// const port = 3000;
+// app.listen(port, console.log("Listening"))
+
+**// Global**
+function getTodoList(){
+  const rawData = fs.readFileSync('./todoList.json', 'utf8');
+  const toReturn = JSON.parse(rawData);
+  return toReturn;
+}
+
+function writeTodoList(content){
+  fs.writeFileSync('./todoList.json', content);
+  return;
+}
+
+let idGenerator = 4;
+
+**// GET all**
+function getTodos(req, res){
+  let todoLists = getTodoList();
+  res.json(todoLists)
+}
+app.get('/todos', getTodos)
+
+**// GET by id**
+function getTodoByID(req, res){
+  const searchId = Number(req.params.id);
+  let todoLists = getTodoList();
+  const foundTodo = todoLists.find(todo => todo.id === searchId)
+  if (foundTodo) {
+    res.json(foundTodo)
+  } else {
+    res.status(404).send()
+  }
+}
+app.get('/todos/:id', getTodoByID)
+
+**// POST** 
+function addTodo(req, res){
+  let todoLists = getTodoList();
+  const newTodo = req.body;
+  newTodo.id = idGenerator++;
+  todoLists.push(newTodo)
+  writeTodoList(JSON.stringify(todoLists))
+  res.status(201).json(newTodo);
+
+}
+
+app.post('/todos', addTodo)
+
+**// PUT by id**
+function updateTodo(req, res){
+  const searchId = Number(req.params.id);
+  let todoLists = getTodoList();
+  const foundIndex = todoLists.findIndex(todo => todo.id === searchId)
+  if (foundIndex !== -1) {
+    const updateData = req.body;
+    for(let property in updateData){
+      todoLists[foundIndex][property] = updateData[property]
+    }
+    writeTodoList(JSON.stringify(todoLists));
+    res.send("Updated")
+  } else {
+    res.status(404).send()
+  }
+}
+
+app.put('/todos/:id', updateTodo)
+
+**// DELETE by id**
+function deleteTodo(req, res){
+  const searchId = Number(req.params.id);
+  let todoLists = getTodoList();
+  const foundIndex = todoLists.findIndex(todo => todo.id === searchId)
+  if (foundIndex !== -1) {
+    todoLists.splice(foundIndex, 1)
+    writeTodoList(JSON.stringify(todoLists))
+    res.send("Deleted")
+  } else {
+    res.status(404).send("Doesn't Exit")
+  }
+}
+app.delete('/todos/:id', deleteTodo)
+
+**// Any other route**
+app.use((req, res) => {
+  res.status(404).send('Wrong Route');
+});
+
+
+module.exports = app;
+```
+
+
+```javascript
+// Sample Data
+[
+  {
+    "id": 1,
+    "title": "Complete assignment",
+    "description": "Finish the project assignment by Friday",
+    "completed": false
+  },
+  {
+    "id": 2,
+    "title": "Buy groceries",
+    "description": "Get milk, eggs, and bread from the store",
+    "completed": true
+  },
+  {
+    "id": 3,
+    "title": "Go for a run",
+    "description": "Run for 30 minutes in the park",
+    "completed": false
+  }
+]
+```
+
+
+## Authentication
+
+
+---
+
+
+**Status Codes**
+
+
+`201`  Created, like user signed-up
+
+
+`400`  Bad Request, username already exists.
+
+
+`401`  Unauthorised, Wrong login Credentials
+
+
+**Spread Operator** : The spread operator in JavaScript is denoted by three dots (...) and is used to expand an iterable (e.g., an array or object) into individual elements. It allows you to clone, concatenate, or extract elements from arrays and objects easily.
+
+
+![Screenshot_2023-06-24_at_8.26.46_AM.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/bc69e503-3333-4202-9e25-f0a7b2e81504/Screenshot_2023-06-24_at_8.26.46_AM.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150608Z&X-Amz-Expires=3600&X-Amz-Signature=fbbb3e18d330188c8862cd1b3c2bb2f13aeb47c5fce1eac1d735dcb6757df358&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+```javascript
+// Cloning an array
+
+const originalArray = [1, 2, 3];
+const clonedArray = [...originalArray];
+console.log(clonedArray); // [1, 2, 3]
+```
+
+
+```javascript
+// Concatenating arrays
+
+const array1 = [1, 2, 3];
+const array2 = [4, 5, 6];
+const concatenatedArray = [...array1, ...array2];
+console.log(concatenatedArray); // [1, 2, 3, 4, 5, 6]
+```
+
+
+```javascript
+// Adding elements to an existing array
+
+const originalArray = [1, 2, 3];
+const newArray = [...originalArray, 4, 5, 6];
+console.log(newArray); // [1, 2, 3, 4, 5, 6]
+```
+
+
+```javascript
+// Spreading elements of an array as function arguments
+
+const numbers = [1, 2, 3];
+console.log(Math.max(...numbers)); // 3
+```
+
+
+```javascript
+// Creating a new object by merging existing objects
+
+const obj1 = { name: 'John' };
+const obj2 = { age: 30 };
+const mergedObj = { ...obj1, ...obj2 };
+console.log(mergedObj); // { name: 'John', age: 30 }
+```
+
+
+**Rest Operator**
+
+
+```javascript
+// Extracting remaining elements from an array
+
+const [first, second, ...rest] = [1, 2, 3, 4, 5];
+console.log(first); // 1
+console.log(second); // 2
+console.log(rest); // [3, 4, 5]
+```
+
+
+```javascript
+// Combining rest and spread operators:
+
+const numbers = [1, 2, 3, 4, 5];
+const [first, ...rest] = numbers;
+console.log(first); // 1
+console.log(rest); // [2, 3, 4, 5]
+```
+
+
+```javascript
+// Function parameter with variable arguments
+
+function sum(...numbers) {
+  return numbers.reduce((total, num) => total + num, 0);
+}
+
+console.log(sum(1, 2, 3)); // 6
+console.log(sum(4, 5, 6, 7)); // 22
+```
+
+
+**Remove object’s property** : `delete objectName.properyName`
+
+
+## File Server
+
+
+---
+
+
+**Get /files**
+
+
+To read folder/directory `fs.readdir( completePath , callback)` , to get complete path `path.join(__dirname, './files')` where `__dirname` global variable have absolute path of the current directory and `./files` relative path to current current directory. So we using extra library `path` shipped with NodeJS.
+
+
+**Get /file/:filename**
+
+
+`filename` in `app.get('/file/:filename', searchFile)` is a path variable and extracted similar to query params like `req.params.id` and its type is `string` 
+
+
+When writing callback of `fs` always always `error` then `data/file`
+
+
+ 
+
+
+**Handling any route and any method**
+
+
+```javascript
+function anyRoute(req, res){
+	res.status(404).send('Route not found');
+}
+
+**app.all('*', anyRoute);**
+```
+
+
+It is commonly called as a **fallback** or **catch-all route** to handle any type of request for any type of routes that do not exist in your application. `app.all('*', ...)` registers a route handler for all HTTP methods (`all`) and all routes (`*`).
+
+
 [**😸**](https://github.com/100xDevs-hkirat/all-assignments/tree/main/week-2)[ Week-2-Assignment](https://github.com/100xDevs-hkirat/all-assignments/tree/main/week-2)
 

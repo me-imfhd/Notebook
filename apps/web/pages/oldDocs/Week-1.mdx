@@ -1,3 +1,466 @@
 
+## Recapping JS
+
+# Recapping Basics of JS
+
+
+## Foundation
+
+
+---
+
+
+**Computers understand** 0's and 1s but writing programs in 0s & 1s is tough, so Programming Languages like C++, C, JavaScript were introduced for easier programming. 
+Note : In the end, programming languages are translated into 0s 1s.
+
+
+Programming languages like FORTRAN, BASIC etc. do exist, but only for computers, not for browsers. Thus, emerged the **Language of browser** – JavaScript.
+
+
+**ECMA** International (formally European Computer Manufacturers Association) is a non-profit organization that develops standards in computer hardware, communications, and programming languages. Hence, the **ECMAScript** : Guidelines/Standards for building JavaScript language or Compiler.
+
+
+**List of JS Engines**/Compilers
+
+- Google Chrome – V8
+- Mozilla – SpiderMonkey
+- Safari – JavaScriptCore
+
+Running JS on computer
+
+- **Node.js** is JS ~~Framework~~, ~~Language~~, Runtime, – Uses V8 Engine of Chrome.
+- [**Deno.land**](http://deno.land/) , another **TS** and **JS** runtime built on V8. Uses **Rust** as its core language. It was created by **Ryan Dahl**, the creator of Node.js, to fix a long list of inherent problems in Node.js.
+- **Bun**, another JS runtime, instead of V8 it uses **JavaScriptCore** of Apple Safari, core written in **Zig** Language.
+
+> 💡 Runtime is an execution environment in which a program or code is executed. Basically it has everything like libraries etc. needed to run the code like in our case JavaScript. 
+
+
+## JavaScript Basics
+
+
+---
+
+- **Variables** : of which value can change
+- **Loops** : for, while to iterate over arrays, objects.
+
+```javascript
+// Variables with different datatypes
+
+var userName = "Harkirat" // string
+var coursePrice = 5999 // number
+var purchased = true // boolean
+var completeUserData = { // Object(key-value pairs)
+	name : "Harkirat"
+	coursePrice : 5999
+	purchased : true
+}	
+var users = [ "Rookie", "Harkirat" ] // array
+```
+
+- **Functions** : Helps to organize the code and achieve DRY (Don’t Repeat Yourself).
+- **Callback** : When we can pass a function as an argument into another function, usually the last argument. Why ? Helps to achieve below 👇
+
+```javascript
+// From this
+function doArithmetic(firstEl, secondEl, whatToDo) {
+	
+	if(whatToDo === "sum") {
+		var answer = sum(firstEl, secondEl);
+		return answer;
+	}
+
+	if(whatToDo === "multiply") {
+		var answer = multiply(firstEl, secondEl);
+		return answer;
+	}
+
+}
+
+// To this
+function doArithmetic(firstEl, secondEl, funToRun){
+	return funToRun(firstEl, secondEl);
+}
+```
+
+
+## Core Concepts
+
+
+---
+
+
+**JavaScript runs** on browsers and using Node.js, also in backend servers.
+
+
+**Single Threaded** : A processor has multiple cores, and a core is where code runs. Think of cores as number of people, higher the number, more tasks can be completed at once. In JS, despite the more number of cores, say 10, JS runs on a single core only, hence single threaded. Simply putting, _parallel computing is not possible_. 😲 This is why _code runs sequentially_. One after One.
+
+
+> 💡 Think of cores as number of people, higher the number, more tasks can be completed at once. But JS uses only one, hence single threaded.
+
+
+**Synchronous :** Synchronous tasks go in sync like one by one, where each step of the task must complete before the next step can begin. Think of it like people in queue waiting to buy tickets, the next person in line can only buy their ticket once the person ahead of them has completed their purchase. Therefore, a line of code must be finish execution before it moves to the next. Hence, “Blocking” Nature.
+
+
+ 
+
+
+> 💡 Think of it like people in queue waiting to buy tickets. Next person can buy only when ahead of him finished. Hence, synchronous is “Blocking” in nature.
+
+
+**Asynchronous** :  Asynchronous tasks (_Background Tasks_) take time, how much we don’t know. Think of it like parcel will be delivered by today, but not sure what time. CBSE will releaser result today, but not sure what time. Similarly, when we send a http request, a response will be received but don’t know at what time. That is what needs to be run in the background, which is possible via Asynchronous Programming, this allows the program to continue executing other operations or tasks while waiting for the completion of the asynchronous task. . Thus, “Non-Blocking” behaviour enables greater concurrency.
+
+
+> 💡 Think of it like parcel will be delivered by today, CBSE will release result today but not sure what time. Needs to run in background.  Hence, asynchronous is “Non-Blocking” in nature.
+
+
+**Asynchronous Tasks**
+
+	- Keyboard Input in game
+	- Network Requests
+	- File Operations
+	- Database Queries
+
+## Terminology
+
+
+---
+
+
+**Loosely/Weakly Typed** : If I can input **any data type** say string, number, boolean to variable or a parameter passing to a function, then it is loosely typed. Example : **JavaScript**.
+
+
+S**trongly typed** : When I can input only a **specific data type** defined by programmer to a variable or a parameter passing to a function, also what type of data the function should return, then it is strongly typed. Example : **C++**
+
+
+Loosely typed example in JavaScript:
+
+
+```javascript
+// Can put "any type of data" in variable "iAmVariable"
+var iAmVariable = "Harkirat"
+iAmVariable = true
+iAmVariable = 5999
+```
+
+
+Strongly typed example in C++:
+
+
+```c++
+// Can put "only specific type of data" in variable "iAmVariable"
+int iAmVariable = 5999;
+iAmVariable = "Harkirat" // ERROR !!! NOT POSSIBLE, only number
+```
+
+
+**Statically typed** languages check the data types and **look for type errors during compile tim**e. Ex : C++, Java
+
+
+**Dynamically typed** languages check the data types and **look for type errors during runtime**. Ex : JS
+
+
+![Source : Link](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/65b7434a-8fa4-4155-b189-0950fc94c306/static_vs_dynamic_2.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150547Z&X-Amz-Expires=3600&X-Amz-Signature=d1aab70c3e108397cd77ee694e6226358040e9ee37c50874c3ad08791a9e2aeb&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+![Source : Link](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/94c5c11b-e107-4376-9074-dcb6b8c83af2/static_vs_dynamic_typing.jpeg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150548Z&X-Amz-Expires=3600&X-Amz-Signature=6b05c47752ae2e4df2f202a08b5e6e9e2ac40e67ff03cea0a405b875f04d5134&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+**Interpreted Language**: Interpreted languages **keep executing correct code until encounters an incorrect/error-full code**. Example : JavaScript, Python.
+
+
+**Compiled** **Language** :  Compiled languages **require the entire code to be error-free** before running. Example : C++, Java
+
+
+![Source : Link](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/622f605f-57a5-4ea1-83f4-8dc2e4bbf3a5/compile_vs_interpreted.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150547Z&X-Amz-Expires=3600&X-Amz-Signature=a6642c09ff1b1b00b8642c71708ac207c19fcd46727a1a06dc8e42c053b88db3&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+- **Native to JS** : Date Object.
+- **APIs** : Runtime environments like Node.js expose APIs such as **fetch**, **setTimeout**, **setInterval**, and **Filesystem**. However, the browser APIs do not include Filesystem, as it would allow access to the entire computer's data.
+- **List of Browser APIs** : fetch, canvas, clipboard, geolocation, setTimeout, setInterval.
+
+> 💡 API : Think of it like ordering food at a restaurant. The menu acts as an API, listing the available dishes you can request. You communicate **your order** (**request**) to the waiter, who takes it to the kitchen. The kitchen processes your order and **prepares the food**, which is then delivered back to you as a **response**.
+
+
+## Async Javascript
+
+# Async, await, callbacks, promises
+
+
+> ⭐ Due to DRM encryption on 100xdev, screenshots taken turn out black.
+
+
+## Recap
+
+
+---
+
+
+Consider three tasks below
+
+1. Teach (Takes 1 hr)
+2. Buy iPad (Takes 1hr)
+3. Cook Dinner (Takes 1 hr)
+
+**In Synchronous way**, I alone will do 3 tasks sequentially. One by One. Thus, **took 3 Hours**.
+
+
+**In an Asynchronous way**, I teach and meanwhile told my brother to buy an iPad and sister to cook dinner. Thus, it **took  1 hour**.
+
+
+```javascript
+// Code for stopwatch
+
+var counter = 1;
+
+function printCounter(){
+  **console.clear();**
+  console.log(counter);
+  counter = counter+1;
+}
+
+setInterval(printCounter, 1000);
+```
+
+
+## JS Runtime/Event Loop
+
+
+---
+
+
+**Event Loop** is a way of running asynchronous code (background task) in JavaScript. 
+
+
+An async code is offloaded to “**Web APIs**”, (which is on _separate thread_) or so it keeps running in background and doesn't block the _main thread_. When this background task is completed, its callback is added to a “**Callback Queue**” and is pushed to “**Call Stack**”(when it is empty) by “**Event Loop**” and hence that callback executes on main thread.
+
+
+[Screen_Recording_2023-06-18_at_4.26.16_PM.mov](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/7fd59fa2-4733-45a3-9fbc-3c794406bad3/Screen_Recording_2023-06-18_at_4.26.16_PM.mov?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150549Z&X-Amz-Expires=3600&X-Amz-Signature=f202d0c608115f1bba33d4a94d63c0b21d4ce50899080056459167cbf50373ed&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+In the code below, setTimeout, an async code, is offloaded to Web APIs, and its callback is pushed into in the callback queue when time ends. Its callback executes only when the Call Stack is empty or there is no long-running task.
+
+
+```javascript
+// The code used in above demonstration.
+
+var counter = 1;
+
+function printCounter(){
+  console.clear();
+  console.log(counter);
+  counter = counter+1;
+}
+
+setTimeout(printCounter, 3000);
+
+var counter = 0;
+for(var i = 0; i < 3; i++){
+    counter = counter + i;
+}
+```
+
+
+> ⭐ Web API runs on a separate thread for async/background task, while the JS thread is for main task.
+
+
+**Additional Resources**
+
+
+[bookmark](https://youtu.be/EI7sN1dDwcY)
+
+
+[bookmark](https://youtu.be/8aGhZQkoFbQ)
+
+
+## Callback & Promises
+
+
+---
+
+
+**Callback** : When we want to call a function after a task finishes. Like I want my friend to get Medicine2 once I receive the Medicine1 from him. Below is the code for the same.
+
+
+```javascript
+function getMedicine1(){
+	console.log("1 Received");
+	setTimeout(getMedicine2, 2000);
+}
+
+function getMedicine2(){
+	console.log("2 Received");
+}
+
+setTimeout(getMedicine1, 1000);
+```
+
+
+**Callback Hell** : When the code above is written like below, this usually happens in complex code, which too much nested. This super ugly code is referred to as “Callback Hell”.
+
+
+```javascript
+setTimeout(function getMedicine1(){
+ console.log("1 Received");
+  setTimeout(function getMedicine2(){
+	console.log("2 Received"); 
+  }, 2000);
+}, 1000);
+```
+
+
+**Promises** : In the solution to callback hell, promises were introduced.
+
+
+```javascript
+function getMedicine1() {
+  return new Promise(function(resolve, reject) {
+    setTimeout(function() {
+      console.log("1 Received")
+      resolve();
+    }, 1000);
+  });
+}
+
+function getMedicine2() {
+  return new Promise(function(resolve, reject) {
+    setTimeout(function() {
+			console.log("2 Received")
+      resolve();
+    }, 2000);
+  });
+}
+
+getMedicine1()
+	.then(getMedicine2())
+```
+
+
+**Another Promise example :** Simulating an Asynchronous Operation (e.g., making an API request)
+
+
+```javascript
+const fetchData = new Promise((resolve, reject) => {
+  setTimeout(() => {
+    const data = { name: "John Doe", age: 25 };
+    resolve(data); }
+  , 2000);
+});
+
+fetchData
+  .then((result) => {
+    console.log("Data fetched:", result);
+  })
+  .catch((error) => {
+    console.error("Error:", error);
+  });
+```
+
+
+> 👇🏻 Summarization of **Callback** and **Promise**
+
+
+**Callbacks**: Function provided to be called back when task completes.
+
+
+
+**Promises**: Immediate promise received, allowing chaining of functions based on fulfilment or rejection.
+
+
+```javascript
+function printContent(error, data) {
+	console.log(data);
+}
+
+fs.read("file.txt", printContent) // Callback Version
+fs.read("file.txt").then(printContent) // Promise Version
+```
+
+
+## Async / Await
+
+
+---
+
+
+This is covered in Backend – Database & Authentication
+
+
+[Auth and Database](https://www.notion.so/0ed95fd33ffd4e8b8c2174cececfc812) 
+
+
+## Assignment Learnings
+
+---
+
+
+**Solution** : [Link](https://github.com/madhavanand-github/Week-1-assignment)
+
+
+![Extra Mile to given assignments](https://prod-files-secure.s3.us-west-2.amazonaws.com/4dd32e22-0b9d-4863-baa0-84dfdaf49ec9/15328719-2a6f-4369-a891-ce2a0e7edf45/Screenshot_2023-06-22_at_9.29.14_PM.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240118%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240118T150550Z&X-Amz-Expires=3600&X-Amz-Signature=dc1dc61f67e6f29cec0b4cd923aac045fc2451449aacad80f7d3e950ee8c743a&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+**Class**
+
+- To **create** **constructor** keyword to use : ~~className~~ constructor
+- To **create** **properties**/variables, use : this.{name}
+- To **create methods**/functions, don’t use keyword : ~~function~~ functionName
+- To **list methods** of an object, use : {objectName}.__proto__
+- To create **Private Properties** : use symbols
+
+**Functions**
+
+- **Anagram check** – split, sort, join
+- **For-of** loop : iterate over iterable objects, like arrays or strings.
+- F**or-in** loop : iterate over enumerable properties. Like objects. ⚠️ When used on array, returns index.
+- **Dot Notation** in object : properties without special characters.
+- **Square bracket** in object : properties with special characters, variables, strings
+- **List date** properties and methods : console.dir(date)
+- **Date Object** : This is a different type of object, a constructor. Even after creating a new instance and then logging, it shows Time as string, as `toString` function is implicitly/auto called.
+- **replace**(this, withThis), this can be a regex or string. ⚠️ Regex, never in quotes.
+- **trim**(), remove start & end spaces. ⚠️ May fail to remove start & end spaces, like here “ a b ” → “ a b ”
+- **eval**(arithmetic Expression)
+- **Regex** for multiple Spaces : \/s+\g | [Understanding RegEx - This Dot Labs](https://www.thisdot.co/blog/understanding-regex/)
+- **try catch finally** [try, catch, finally, throw - error handling in JavaScript](https://youtu.be/cFTFtuEQ-10)
+- **Infinity** is number type, eval(‘10/0’) evaluates to Infinity
+- **instanceof** is an operator, to check whether an object belongs to a specific class or constructor function. Like “error instanceof SyntaxError”
+- **typeof** is an operator, checks the data type
+- **Another regex** : /\s+|[.,;:?!]/g, To split a string into an array of substrings based on the whitespace or punctuation characters matched.
+
+**Symbols**
+
+- [The Complete Guide to JS Symbols ES6](https://youtu.be/4J5hnOCj69w)
+- Used to create private properties, private in the sense it doesn’t appear when an object is logged. Like in here “Object.getOwnPropertyNames(obj)”
+- 😆You can still see that “Object.getOwnPropertySymbols(obj)”.
+- “_” this is just a convention.
+
+```javascript
+const _todos = Symbol('todos');
+
+class Todo {
+  constructor() {
+    this[_todos] = [];
+  }
+}
+
+const todoList = new Todo();
+console.log(todoList[_todos]);
+```
+
+
+**⭐** Think of every possible condition. Don’t jump to code.
+
+
+🚀 Stopping a script in JS, similar to exit/quit/stop
+
+
+// Stopping Synchronous Code in browser : Use Throw
+
+
+```javascript
+throw new Error("Script execution stopped.");
+
+console.log("This line will not be executed.");
+```
+
+
 [**😸**](https://github.com/100xDevs-hkirat/all-assignments/tree/main/week-2)[ Week-1-Assignment](https://github.com/100xDevs-hkirat/all-assignments/tree/main/week-1)
 
