@@ -8,72 +8,8 @@ import {
 import { z } from "zod";
 import { NotionToMarkdown } from "notion-to-md";
 import { Client } from "@notionhq/client";
+import { n2nPerPageInputSchema, notionToNextraInputSchema } from "@notebook/db";
 
-const notionToNextraInputSchema = z.object({
-  pageId: z.string().min(32).max(36),
-  rootRoute: z.object({
-    name: z.string().refine(
-      (name) => {
-        // Check if name is empty
-        if (!name) return false;
-
-        // Check if name starts with a period or a hyphen
-        if (
-          name.startsWith(".") ||
-          name.startsWith("-") ||
-          name.startsWith("/")
-        )
-          return false;
-
-        // Check if name contains invalid characters
-        const invalidCharacters = /[\:*?"<>|]/;
-        if (invalidCharacters.test(name)) return false;
-
-        // Check if name exceeds maximum length
-        if (name.length > 255) return false;
-
-        return true;
-      },
-      {
-        message: "Invalid directory name",
-      }
-    ),
-    title: z.string(),
-  }),
-  token: z.string().length(50),
-});
-const n2nPerPageInputSchema = z.object({
-  pageId: z.string().min(32).max(36),
-  rootRoute: z.string().refine(
-    (name) => {
-      if (!name) return false;
-      if (name.startsWith(".") || name.startsWith("-") || name.startsWith("/"))
-        return false;
-      const invalidCharacters = /[\:*?"<>|]/;
-      if (invalidCharacters.test(name)) return false;
-      if (name.length > 255) return false;
-      return true;
-    },
-    {
-      message: "Invalid directory name",
-    }
-  ),
-  pageName: z.string().refine(
-    (name) => {
-      if (!name) return false;
-      if (name.startsWith(".") || name.startsWith("-") || name.startsWith("/"))
-        return false;
-      const invalidCharacters = /[\:*?"<>|]/;
-      if (invalidCharacters.test(name)) return false;
-      if (name.length > 255) return false;
-      return true;
-    },
-    {
-      message: "Invalid directory name",
-    }
-  ),
-  token: z.string().length(50),
-});
 export const notionRouter = createTRPCRouter({
   notionToNextra: publicProcedure
     .meta({
