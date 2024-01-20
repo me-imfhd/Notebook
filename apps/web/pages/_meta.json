@@ -1,20 +1,6 @@
 {
-  "oldDocs": {
-    "type": "page",
-    "display": "hidden",
-    "title": "100xDevs Old Notebook",
-    "theme": {
-      "sidebar": false,
-      "pagination": false
-    }
-  },
   "docs": {
     "type": "page",
-    "display": "hidden",
-    "title": "100xDevs Notebook",
-    "theme": {
-      "sidebar": false,
-      "pagination": false
-    }
+    "title": "Introduction"
   }
 }

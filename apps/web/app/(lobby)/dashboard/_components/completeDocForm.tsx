@@ -1,6 +1,7 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { trpc } from "@notebook/trpc/trpc/client";
+import { useLocalStorage } from "usehooks-ts";
 import {
   Shell,
   FormField,
@@ -13,44 +14,26 @@ import {
   Button,
   Form,
   useToast,
+  FormDescription,
 } from "@notebook/ui/components";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-
-const notionToNextraInputSchema = z.object({
-  pageId: z.string().min(32).max(36),
-  rootRoute: z.object({
-    name: z.string().refine(
-      (name) => {
-        if (!name) return false;
-        if (
-          name.startsWith(".") ||
-          name.startsWith("-") ||
-          name.startsWith("/")
-        )
-          return false;
-        const invalidCharacters = /[\:*?"<>|]/;
-        if (invalidCharacters.test(name)) return false;
-        if (name.length > 255) return false;
-        return true;
-      },
-      {
-        message: "Invalid directory name",
-      }
-    ),
-    title: z.string(),
-  }),
-  token: z.string().length(50),
-});
+import { notionToNextraInputSchema } from "@notebook/db";
 
 export function CompleteDocForm() {
+  const [storageToken, setStorageToken] = useLocalStorage("completeDtoken", "");
+  const [storageRoot, setStorageRoot] = useLocalStorage("completeDRoot", "");
+
   const N2N = trpc.notion.notionToNextra.useMutation();
   const end2endN2NForm = useForm<z.infer<typeof notionToNextraInputSchema>>({
     resolver: zodResolver(notionToNextraInputSchema),
     defaultValues: {
-      rootRoute: { name: "docs", title: "100xDevs Notebook" },
+      rootRoute: {
+        name: storageRoot,
+      },
+      token: storageToken,
     },
   });
   const [page, setPage] = useState("/docs");
@@ -67,19 +50,22 @@ export function CompleteDocForm() {
   return (
     <Shell
       as={"div"}
-      className="flex flex-col items-center w-full md:w-5/12 border rounded-lg"
+      className="flex flex-col items-start w-full lg:w-5/12 border rounded-lg"
     >
+      <div className="text-2xl">Make Nested Docs</div>
       <Form {...end2endN2NForm}>
         <form
           onSubmit={end2endN2NForm.handleSubmit((data) => {
             setPage(`/${data.rootRoute.name}`);
+            setStorageToken(data.token);
+            setStorageRoot(data.rootRoute.name);
             N2N.mutate({
               pageId: data.pageId,
               rootRoute: data.rootRoute,
               token: data.token,
             });
           })}
-          className="w-full sm:space-y-3"
+          className="w-full space-y-3"
         >
           <FormField
             control={end2endN2NForm.control}
@@ -90,6 +76,16 @@ export function CompleteDocForm() {
                 <FormControl>
                   <Input placeholder="secret_gibberish" required {...field} />
                 </FormControl>
+                <FormDescription>
+                  Create a notion integration token from{" "}
+                  <Link
+                    className="text-accent-foreground hover:underline"
+                    href={"https://notion.so/my-integrations"}
+                  >
+                    here
+                  </Link>{" "}
+                  and connect your page to it.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -107,6 +103,10 @@ export function CompleteDocForm() {
                     {...field}
                   />
                 </FormControl>
+                <FormDescription>
+                  Your notion page needs to be connected to your integration
+                  app.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -116,10 +116,13 @@ export function CompleteDocForm() {
             name="rootRoute.name"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Root Route Name</FormLabel>
+                <FormLabel>Root Route</FormLabel>
                 <FormControl>
-                  <Input required placeholder="mydocs" {...field} />
+                  <Input required placeholder="docs" {...field} />
                 </FormControl>
+                <FormDescription>
+                  This is your home route of your docs. E.g., Example.com/docs
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -129,14 +132,18 @@ export function CompleteDocForm() {
             name="rootRoute.title"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Route Title</FormLabel>
+                <FormLabel>Root Title</FormLabel>
                 <FormControl>
                   <Input required placeholder="Documentation" {...field} />
                 </FormControl>
+                <FormDescription>
+                  This is the title for your home route in the navbar.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
           />
+
           <div className="flex justify-between pt-3 items-center">
             <Button type="submit" disabled={N2N.isLoading}>
               {N2N.isLoading ? (

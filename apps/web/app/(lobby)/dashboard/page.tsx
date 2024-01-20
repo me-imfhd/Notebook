@@ -1,5 +1,6 @@
 import { Shell } from "@notebook/ui/components";
 import { PerPageForm } from "./_components/perPageForm";
+import { CompleteDocForm } from "./_components/completeDocForm";
 
 export default function IndexPage() {
   if (process.env.NEXT_PUBLIC_VERCEL_ENV || process.env.VERCEL_ENV) {
@@ -8,7 +9,7 @@ export default function IndexPage() {
 
   return (
     <Shell className="flex flex-wrap ">
-      {/* <CompleteDocForm></CompleteDocForm> */}
+      <CompleteDocForm></CompleteDocForm>
       <PerPageForm></PerPageForm>
     </Shell>
   );

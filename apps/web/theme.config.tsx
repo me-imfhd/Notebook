@@ -2,9 +2,9 @@ import { useRouter } from "next/router";
 import { DocsThemeConfig, useConfig } from "nextra-theme-docs";
 
 const theme: DocsThemeConfig = {
-  // project: {
-  //   link: "https://github.com/100XEnginners/100xnotebook",
-  // },
+  project: {
+    link: "https://github.com/me-imfhd/Notebook",
+  },
   logo: () => (
     <>
       <span
@@ -24,7 +24,7 @@ const theme: DocsThemeConfig = {
             strokeWidth="2"
           />
         </svg>
-        <h1 style={{ fontSize: "24px", fontWeight: "500" }}>100xNotebook</h1>
+        <h1 style={{ fontSize: "24px", fontWeight: "500" }}>Notebook</h1>
       </span>
       <style jsx>{`
         .parent svg,
@@ -48,13 +48,12 @@ const theme: DocsThemeConfig = {
       `}</style>
     </>
   ),
-  docsRepositoryBase:
-    "https://github.com/100XEnginners/100xnotebook/tree/main/apps/web",
+  docsRepositoryBase: "https://github.com/me-imfhd/notebook/tree/main/apps/web",
   useNextSeoProps() {
     const { asPath } = useRouter();
     if (asPath !== "/") {
       return {
-        titleTemplate: "%s – 100xNotebook",
+        titleTemplate: "%s – Notebook",
       };
     }
     return;
@@ -63,7 +62,7 @@ const theme: DocsThemeConfig = {
     const { asPath, defaultLocale, locale } = useRouter();
     const { title } = useConfig();
     const url =
-      "https://100xnotebook.vercel.app" +
+      "https://my-app.com" +
       (defaultLocale === locale ? asPath : `/${locale}${asPath}`);
 
     return (
@@ -71,9 +70,12 @@ const theme: DocsThemeConfig = {
         <meta property="og:url" content={url} />
         <meta
           property="og:title"
-          content={title ? title + " – 100xNotebook" : "100xNotebook"}
+          content={title ? title + " – Notebook" : "Notebook"}
         />
-        <meta property="og:description" content={"100xdevs Notebook."} />
+        <meta
+          property="og:description"
+          content={"Make documentations with Notion & Nextra."}
+        />
       </>
     );
   },
@@ -91,7 +93,7 @@ const theme: DocsThemeConfig = {
     defaultMenuCollapseLevel: 2,
     toggleButton: true,
   },
-  footer: { text: `${new Date().getFullYear()} © 100xDevs` },
+  footer: { text: `${new Date().getFullYear()} © Fahad` },
   toc: { float: true, backToTop: true },
 };
 export default theme;

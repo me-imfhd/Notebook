@@ -1,5 +1,6 @@
 "use client";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { n2nPerPageInputSchema } from "@notebook/db";
 import { trpc } from "@notebook/trpc/trpc/client";
 import {
   Shell,
@@ -13,58 +14,23 @@ import {
   Button,
   useToast,
   Form,
+  FormDescription,
 } from "@notebook/ui/components";
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
+import { useLocalStorage } from "usehooks-ts";
 import { z } from "zod";
-const n2nPerPageInputSchema = z.object({
-  pageId: z.string().min(32).max(36),
-  rootRoute: z.string().refine(
-    (name) => {
-      if (!name) return false;
-      if (name.startsWith(".") || name.startsWith("-") || name.startsWith("/"))
-        return false;
-      const invalidCharacters = /[\:*?"<>|]/;
-      if (invalidCharacters.test(name)) return false;
-      if (name.length > 255) return false;
-      return true;
-    },
-    {
-      message: "Invalid directory name",
-    }
-  ),
-  pageName: z.string().refine(
-    (name) => {
-      if (!name) return false;
-      if (name.startsWith(".") || name.startsWith("-") || name.startsWith("/"))
-        return false;
-      const invalidCharacters = /[\:*?"<>|]/;
-      if (invalidCharacters.test(name)) return false;
-      if (name.length > 255) return false;
-      return true;
-    },
-    {
-      message: "Invalid directory name",
-    }
-  ),
-  token: z.string().length(50),
-});
 
 export function PerPageForm() {
-  const isWindowDefined = Boolean(typeof window !== "undefined");
+  const [storageToken, setStorageToken] = useLocalStorage("singlePToken", "");
+  const [storageRoot, setStorageRoot] = useLocalStorage("singlePRoot", "");
   const n2nPerPage = trpc.notion.notionToNextraPerPage.useMutation();
   const n2nPerPageForm = useForm<z.infer<typeof n2nPerPageInputSchema>>({
     resolver: zodResolver(n2nPerPageInputSchema),
     defaultValues: {
-      pageId: isWindowDefined ? (localStorage.getItem("pageId") as string) : "",
-      pageName: isWindowDefined
-        ? (localStorage.getItem("pageName") as string)
-        : "",
-      rootRoute: isWindowDefined
-        ? (localStorage.getItem("rootRoute") as string)
-        : "",
-      token: isWindowDefined ? (localStorage.getItem("token") as string) : "",
+      rootRoute: storageRoot,
+      token: storageToken,
     },
   });
   const [route, setRoute] = useState<string | null>(null);
@@ -84,18 +50,14 @@ export function PerPageForm() {
       as={"div"}
       className="flex flex-col items-start  w-full lg:w-5/12 border rounded-lg"
     >
-      <div className="text-2xl">Make One Page Per Id</div>
+      <div className="text-2xl">Make Single Page Doc</div>
       <Form {...n2nPerPageForm}>
         <form
           onSubmit={n2nPerPageForm.handleSubmit((data) => {
             const route = "/" + data.rootRoute + "/" + data.pageName;
             setRoute(route);
-            if (isWindowDefined) {
-              localStorage.setItem("pageId", data.pageId);
-              localStorage.setItem("pageName", data.pageName);
-              localStorage.setItem("token", data.token);
-              localStorage.setItem("rootRoute", data.rootRoute);
-            }
+            setStorageToken(data.token);
+            setStorageRoot(data.rootRoute);
 
             n2nPerPage.mutate({
               pageId: data.pageId,
@@ -115,6 +77,16 @@ export function PerPageForm() {
                 <FormControl>
                   <Input placeholder="secret_gibberish" required {...field} />
                 </FormControl>
+                <FormDescription>
+                  Create a notion integration token from{" "}
+                  <Link
+                    className="text-accent-foreground hover:underline"
+                    href={"https://notion.so/my-integrations"}
+                  >
+                    here
+                  </Link>{" "}
+                  and connect your page to it.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -132,6 +104,10 @@ export function PerPageForm() {
                     {...field}
                   />
                 </FormControl>
+                <FormDescription>
+                  Your notion page needs to be connected to your integration
+                  app.
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -141,10 +117,13 @@ export function PerPageForm() {
             name="rootRoute"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Root Route Name</FormLabel>
+                <FormLabel>Root Route</FormLabel>
                 <FormControl>
-                  <Input placeholder="docs or oldDocs" {...field} />
+                  <Input placeholder="docs" {...field} />
                 </FormControl>
+                <FormDescription>
+                  This is your home route of your docs. E.g., Example.com/docs
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
@@ -154,10 +133,14 @@ export function PerPageForm() {
             name="pageName"
             render={({ field }) => (
               <FormItem>
-                <FormLabel>Page Name</FormLabel>
+                <FormLabel>Page Route</FormLabel>
                 <FormControl>
-                  <Input placeholder="Week-8" {...field} />
+                  <Input placeholder="Meditation" {...field} />
                 </FormControl>
+                <FormDescription>
+                  This is your page route of your docs. E.g.,
+                  Example.com/docs/Meditation
+                </FormDescription>
                 <FormMessage />
               </FormItem>
             )}
