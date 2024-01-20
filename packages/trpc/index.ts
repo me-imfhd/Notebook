@@ -5,14 +5,9 @@ import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 /**
  * Inference helpers for input types
  * @example type HelloInput = RouterInputs['example']['hello']
-**/
+ **/
 import type { AppRouter } from "./server/routers/_app";
-import { Client } from "@notionhq/client";
 
-if (!process.env.NOTION_INTEGRATION_TOKEN) {
-    throw new Error("Please correctly set your NOTION_INTEGRATION_TOKEN in your .env");
-}
-export const client = new Client({ auth: process.env.NOTION_INTEGRATION_TOKEN });
 export type RouterInputs = inferRouterInputs<AppRouter>;
 
 /**
@@ -20,4 +15,3 @@ export type RouterInputs = inferRouterInputs<AppRouter>;
  * @example type HelloOutput = RouterOutputs['example']['hello']
  **/
 export type RouterOutputs = inferRouterOutputs<AppRouter>;
-
