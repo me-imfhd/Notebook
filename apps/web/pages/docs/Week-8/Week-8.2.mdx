@@ -690,7 +690,7 @@ For this, we need to introduce an auth middleware
 
 Create a `middleware.js` file that  exports an `authMiddleware` function
 
-1. Checks the headers for an Authorization header (Bearer <token>)
+1. Checks the headers for an Authorization header `(Bearer <token>)`
 2. Verifies that the token is valid
 3. Puts the `userId` in the request object if the token checks out.
 4. If not, return a 403 status back to the user
