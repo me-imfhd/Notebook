@@ -10,7 +10,7 @@ export default function IndexPage() {
   return (
     <Shell className="flex flex-wrap ">
       <CompleteDocForm></CompleteDocForm>
-      <PerPageForm></PerPageForm>
+      {/* <PerPageForm></PerPageForm> */}
     </Shell>
   );
 }
