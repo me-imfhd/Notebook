@@ -1,0 +1,253 @@
+
+# Deep Dive into Express
+
+
+## Foundation
+
+
+---
+
+
+**Full Stack** : Backend + Frontend. 
+
+
+> 💡 Expertise in either Backend or Frontend is sufficient to crack a job. Both aren’t mandatory.
+
+
+**4 Essential Parts** of Backend
+
+1. HTTP Servers
+2. Authentication
+3. Databases
+4. Middlewares
+
+**HTTP Servers** Components
+
+1. Request Methods
+2. URL Route
+3. Query Parameter, Headers, Body
+4. Status Codes
+5. Response HTML, Text, JSON
+
+**Pre Internet Days** : An era when computers couldn’t communicate with another computers. 
+
+
+There were powerful computers in top universities like UCLA, MIT capable of computing complex algorithms like nowadays ChatGPT. Say you thought of a great idea or great question, that can only be computed on a computer at MIT. But you're sitting on your couch with a laptop can’t do that, because there was no way for your computer to communicate with MIT’s computer. 
+
+
+> 💡 Pre-Internet Days were days without Internet, or computers without communication.
+
+
+**Client Server Model** : Later we realized that we can connect computers with wires, now wirelessly as well. This enabled our computer to talk to another computer around the world. 
+
+
+When we ask a question in ChatGPT, we send a **Request** to their powerful machine and the answer we get is a **Response**. In this case, your computer is **Client**, and ChatGPT's computer is **Server.**
+
+
+> 💡 Asking question to ChatGPT is a “Request” from your computer (Client)  
+> Answer received from ChatGPT is a “Response” from their computer (Server)
+
+
+![Source : Link](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/e5dbbfbe-6942-4493-83e1-dcae034cf135/request-response.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002324Z&X-Amz-Expires=3600&X-Amz-Signature=1bc9b12322183ab2d394c9a93dd42f879052ffd763b7fc738628c5d34ce9406b&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+**Protocols** : Communication between computers may sound simple, but there must be a set of rules to follow for effective communication between them. These rules are Protocols. 
+
+
+Like on airport, there are set of rules that must be followed in order to get onboarded, which is Web Check-in, Luggage Check-In, Security Check. Similarly, for their computers to effectively communicate, we have certain set of rules and one of the popular protocol is **HTTP Protocol**.
+
+
+> 💡 Like there is a protocol (set of rules) before we onboard in a plane, there is a popular HTTP Protocol for computers to communicate between each other over internet
+
+
+**Another Reason Why do we need servers ? Apart from speed.**
+
+
+Except these are powerful, For apps like Instagram, YouTube, LinkedIn, the content must be delivered at the moment, which should be new, personalized and updated. All this needs to stored somewhere, which are servers. Thus, we require a way to communicate with them.
+
+
+**Actual request sent to ChatGPT server**
+
+
+![Screenshot_2023-06-19_at_11.53.16_AM.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/de68b75d-eb76-4fd9-954c-7be271a27847/Screenshot_2023-06-19_at_11.53.16_AM.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002324Z&X-Amz-Expires=3600&X-Amz-Signature=4833d23f59db8f812ff8877af95493f59c4e3f89788b6a454a6a737dcc90ea3a&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+## HTTP Server Part 1
+
+
+---
+
+
+**URL** : As we require a number to call a person, an address to send a courier, similarly we require URL (Uniform Resource Locator) to send a request to a specific server.
+
+
+> 💡 URL (Address), say for ChatGPT server is “chat.openai.com”
+
+
+**Route/Path** : Now we know the address, but the server can do multiple things or in terms of programming it can execute multiple functions, so route tells which actions or code should be executed.
+
+
+> 💡 Route (which action), in “chat.openai.com/backend-api/”, “backend-api” is route.
+
+
+**Query Param, Header, Body** : All three are ways to send data to backend. Below is query parameter only.
+
+
+![Source : Link](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/addf2e52-9854-4694-8034-f99eba8fe5b2/query_string_components.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002324Z&X-Amz-Expires=3600&X-Amz-Signature=d90b0f86067532d6dfddf8794f7a3c04f795e8a088872b9accc79c3f20c8fac2&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+**Request Method** : It is like mentioning what this request intended for, to create, read, update or delete data. In short CRUD.
+
+
+![Source : Link](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/c751cd08-78c8-4b2d-8a2d-5fa84694a2b8/http-method-for-restful-apis.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002324Z&X-Amz-Expires=3600&X-Amz-Signature=938f5e44ee430f74213c588e7c54111c30c12c87618f626024aa8aaaf59ae323&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+> 💡 Default Request Method in browser is GET always. The moment you hit Enter, GET request sent.
+
+
+> ⚠️ Although you can manage POST, PUT, DELETE via GET method using different routes, but that is not the ideal way or best practices.
+
+
+> ⚠️ **`header`**, **`body`**, **`status codes`**, **`ports`**, **`reponse(HTML, JSON, TXT)`**, **`CROS`** are covered in next part.
+
+
+## Creating Server using Express
+
+
+---
+
+1. Run `npm init -y`, this initializes the folder and creates `package.json`
+
+> 💡 `package.json` is like Project’s KYC (name, description, author etc) + dependencies (list of external libraries used) + scripts (commands for testing, debugging etc.)
+
+1. Command to run, any JS file like `index.js` is `node index.js`
+
+> 💡 `npm` (Node Package Manager) is a PlayStore of Node.js libraries.
+
+1. Importing Libraries, like we used `fs` library `const fs = require("fs");`  to read/write to a file, similarly we will use `Express` to create our own http server, the only catch is express library is not shipped with Node.js by default, so we have to install using command `npm install express`
+
+> 💡 Think of `libraries` as chrome extensions or plugins that adds extra functionality and all we need to know is how to use, not how they are internally implemented. 
+
+
+> 💡 `node_modules` , this extra folder is like a luggage of guest who comes home to stay longer, that contains his essentials. Technically, this contains all libraries Express needs or express’s essential luggage. 
+
+
+> 💡 `package-lock.json`  stores the exact version of libraries being used in local environment. This is useful when I want to app on another machine with exact same versions.
+
+
+> 💡 `^` in `^4.18.2` means any version greater than this will work or can be installed, but not less than that.
+
+1. Grab the boilerplate from [official-website](https://expressjs.com/en/starter/hello-world.html) or down below.
+
+```javascript
+const express = require('express')
+const app = express()
+const port = 3000
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+```
+
+
+## Adding Route
+
+
+---
+
+
+Adding Route, `/handleSum` that returns the sum of first 100 natural numbers. We can have as many routes we wish to have.
+
+
+```javascript
+const express = require('express')
+const app = express()
+const port = 3000
+
+**function handleSum(req, res){
+  var finalSum = 0;
+  for(var i = 0; i < 100; i++){
+    finalSum = finalSum + i;
+  }
+  var ans = `Sum is ${finalSum}`
+  res.send(ans);
+}
+
+app.get('/handleSum', handleSum)**
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+```
+
+
+![Screenshot_2023-06-21_at_5.41.54_PM.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/ad3c1c9a-44c7-4bae-ad0a-42de4eb97ec7/Screenshot_2023-06-21_at_5.41.54_PM.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002326Z&X-Amz-Expires=3600&X-Amz-Signature=0d32229df09581f02956313d06ea96866a8d9be41f23f468c83ad68023cfabae&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+> ⚠️ `res.send()` method in Express expects a **string** or a **buffer**, not a number, either use `sum.toString()` or convert it to string prior in separate variable like above.
+
+
+## Adding Query Parameter
+
+
+---
+
+
+Query Parameters are followed by a route and `?`, here we added a parameter name `counter` , to route handle sum `/handleSum?counter=10` that returns the sum up to that many numbers. We can have as many parameters we wish to have, separate them by `&`
+
+
+```javascript
+const express = require('express')
+const app = express()
+const port = 3000
+
+function handleSum(req, res){
+  var finalSum = 0;
+	**var upTo = req.query.counter;**
+  for(var i = 0; **i < upTo**; i++){
+    finalSum = finalSum + i;
+  }
+  var ans = `Sum is ${finalSum}`
+  res.send(ans);
+}
+
+app.get('/handleSum', handleSum)
+
+app.get('/', (req, res) => {
+  res.send('Hello World!')
+})
+
+app.listen(port, () => {
+  console.log(`Example app listening on port ${port}`)
+})
+```
+
+
+![Screenshot_2023-06-21_at_5.44.19_PM.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/5fad61c6-df9a-419f-a33d-e283fe869698/Screenshot_2023-06-21_at_5.44.19_PM.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002326Z&X-Amz-Expires=3600&X-Amz-Signature=b6fffe91013e75225af5d3a3f1ea0246df724ec6b7f1af1453f38577cf13204b&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+## Extra Nuggets
+
+
+---
+
+
+**What if I do handle all POST, PUT, DELETE via GET ?**
+Everything will be get stored in browser history, in case password is sent. It will be get stored.
+
+
+**I am getting 304 response, what does that mean ?**
+When you receive a 304 response, it means that the requested resource has not been modified on the server since the browser's last access, and the browser can use its cached version of the resource instead of downloading it again.
+
+
+**Are there routes for every user on Instagram ?**
+No, we use catch all route, looks like `app.get('/:username', searchUser)`
+

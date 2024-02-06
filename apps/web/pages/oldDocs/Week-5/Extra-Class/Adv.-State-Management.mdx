@@ -1,0 +1,213 @@
+
+# **Prop Drilling,** Context**, Recoil**
+
+
+[bookmark](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi)
+
+
+> 📢 Code Snippets, below work like charm, simply paste in App.jsx and install the essentials.
+
+
+## Prop Drilling
+
+
+---
+
+
+Passing of props from `top to bottom` or `parent to child` is called **Prop Drilling**. Note : This is the only way you can pass top to botton.
+
+
+Also, `useState` can be defined in parent only, because of which when child updates the prop, everything re-renders in all child.
+
+
+**Problems**
+
+1. In our example, count is being used by the counter component only, so ideally only that should be rendered.
+2. Also, to pass prop to increase, decrease Component. It has to drill down via a complete chain of child.
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/1790812c-450a-4437-80df-041ddee2ad7b/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002347Z&X-Amz-Expires=3600&X-Amz-Signature=24589aff429d1911dfe7bd0b3e591e0b6946e9c3f88a245bfd775f5b75e584f0&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+```javascript
+import { useState } from 'react'
+import './App.css'
+
+export default function App() {
+  const[count, setCount] = useState(0);
+  return (
+    <div>
+      <h1> Counter Game </h1>
+      <Buttons count={count} setCount={setCount}/>
+      <Counter count={count} />
+    </div>
+  )
+}
+
+function Buttons({count, setCount}){
+  return (<div>
+    <Increase count={count} setCount={setCount}/>
+    <Decrease count={count} setCount={setCount}/>
+  </div>)
+}
+
+function Increase({count, setCount}){
+  return <div>
+    <button onClick={()=>setCount(count+1)}>Increase</button>
+  </div>
+}
+
+function Decrease({count, setCount}){
+  return <div>
+    <button onClick={()=>setCount(count-1)}>Decrease</button>
+  </div>
+}
+
+function Counter({count}){
+  return <div>
+    <h1> {count} </h1>
+  </div>
+}
+```
+
+
+## Contexts
+
+
+---
+
+
+This **solves** the problem of **Prop Drilling**. Think of this as a global variable.
+
+
+```javascript
+import React, { useState, **createContext, useContext** } from 'react';
+import './App.css';
+
+**const CountContext = createContext();**
+
+export default function App() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <CountContext.Provider value={{ count, setCount }}>
+      <div>
+        <h1>Counter Game</h1>
+        <Buttons />
+        <Counter />
+      </div>
+    **</CountContext.Provider>**
+  );
+}
+
+function Buttons() {
+  return (
+    <div>
+      <Increase />
+      <Decrease />
+    </div>
+  );
+}
+
+function Increase() {
+  **const { count, setCount } = useContext(CountContext);**
+
+  return (
+    <div>
+      <button onClick={()=>setCount(count+1)}>Increase</button>
+    </div>
+  );
+}
+
+function Decrease() {
+  **const { count, setCount } = useContext(CountContext);**
+
+  return (
+    <div>
+      <button onClick={()=>setCount(count-1)>Decrease</button>
+    </div>
+  );
+}
+
+function Counter() {
+  **const { count } = useContext(CountContext);**
+
+  return (
+    <div>
+      <h1>{count}</h1>
+    </div>
+  );
+}
+```
+
+
+## Recoil
+
+
+---
+
+
+This **solves** the problem of **Prop Drilling + Re-rendering**. This is not in-built, thus needs to be installed.
+
+
+```javascript
+import React from 'react';
+**import { RecoilRoot, useRecoilValue, useSetRecoilState, atom } from 'recoil';**
+import './App.css';
+
+**const countState = atom({
+  key: 'countState',
+  default: 0
+});**
+
+export default function App() {
+
+  return (
+    **<RecoilRoot>**
+      <div>
+        <h1>Counter Game</h1>
+        <Buttons />
+        <Counter />
+      </div>
+    **</RecoilRoot>**
+  );
+}
+
+function Buttons() {
+  return (
+    <div>
+      <Increase />
+      <Decrease />
+    </div>
+  );
+}
+
+function Increase() {
+  **const setCount = useSetRecoilState(countState);**
+
+  return (
+    <div>
+      <button onClick={() => setCount((prevCount) => prevCount + 1)}>Increase</button>
+    </div>
+  );
+}
+
+function Decrease() {
+  **const setCount = useSetRecoilState(countState);**
+  return (
+    <div>
+      <button onClick={() => setCount((prevCount) => prevCount - 1)}>Decrease</button>
+    </div>
+  );
+}
+
+function Counter() {
+  **const count = useRecoilValue(countState);**
+
+  return (
+    <div>
+      <h1>{count}</h1>
+    </div>
+  );
+}
+```
+

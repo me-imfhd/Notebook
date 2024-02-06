@@ -1,0 +1,115 @@
+
+> 🚧 Concepts in detail are covered here [Adv. State Management](https://www.notion.so/95d6de8236cb484387df82c701f4a8cd) 
+
+
+## Existing State Management
+
+
+---
+
+
+So far state was defined, inside the component, due to which we can’t pass it up to the parent, rather only down to the children.
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/cb8017a6-2c6d-47aa-ae86-b88bfa757fd4/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002349Z&X-Amz-Expires=3600&X-Amz-Signature=99ffc931acc96c8f119782378ac86d73f89c07b4caa4182cc6d2e6ddc2cbac21&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+So the **first UGLY way around** is to have all the states in App.jsx(the root parent component) and keep passing it down to children. Technically, rolling up the state up to App.jsx and re-rendering on state change.
+
+
+> 💡 UGLY way – Rolling up all the states to the App.jsx(Root Parent) and on state change it triggers re-render.
+
+
+## Better State Management
+
+
+---
+
+
+Issue with above solution is
+
+1. Defining **all states at parent** are hard to maintain.
+2. Useless **re-rendering** of all components.
+3. **Prop-Drilling** : Keep passing the props down the tree, even if the child between doesn’t need it.
+
+> 💡 The **Context API** only solves prop-drilling issue, but **Recoil** solves both prop-drilling and re-rendering (by rendering only the necessary components).
+
+
+Having a global state and using state management libraries like `recoil` makes life easier.
+
+
+Some state management libraries are
+
+1. **Zustand** : The oldest.
+2. **Redux** : Popular before recoil.
+3. **Recoil** : The Open Source Choice & The Most Popular NOW!!
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/57e95154-b2ff-4d4c-970b-ff7f39984c1c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002349Z&X-Amz-Expires=3600&X-Amz-Signature=40170808a5259f0dca71345985226270a921ac212df4424f4b7c73a98f2af214&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+> That separate folder having all states is usually called `store`
+
+
+## Recoil
+
+
+---
+
+
+Below are the steps, else [**Must Read Doc**](https://recoiljs.org/docs/introduction/getting-started)
+
+
+```typescript
+// Install
+npm install recoil
+```
+
+
+```typescript
+// Wrap the component
+import React from 'react';
+import {
+  RecoilRoot,
+  atom,
+  selector,
+  useRecoilState,
+  useRecoilValue,
+} from 'recoil';
+
+function App() {
+  return (
+    **<RecoilRoot>**
+      <CharacterCounter />
+    **</RecoilRoot**>
+  );
+}
+```
+
+
+```typescript
+// Similar to state
+const textState = atom({
+  key: 'textState', // unique ID (with respect to other atoms/selectors)
+  default: '', // default value (aka initial value)
+});
+```
+
+
+**Selectors** = Sub-atom/part of an atom. Basically the idea is if we get value from the atom we get everything, but if we want only specific value that from the atom we use selectors.
+
+
+> 💡 Instead of `<RecoilRoot></RecoilRoot>` in app.jsx we can put in main.jsx.
+
+
+> ⚠️ Selector can be combination from multiple atoms
+
+
+In short
+
+- **Atom** = State
+- **Selector** = Sub-part of the atom.
+- **To set value** :  `const setUser = useSetRecoilState(userState)`
+- **To get value** : `const user = useRecoilValue(userState)`
+
+> 🔥 It is crucial to ensure that a component subscribes to the value only it requires.
+

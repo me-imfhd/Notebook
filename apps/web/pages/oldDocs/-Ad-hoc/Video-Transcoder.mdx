@@ -1,0 +1,254 @@
+
+[bookmark](https://slides.com/harkiratsingh-4/extra-class)
+
+
+## Getting Started
+
+
+---
+
+
+> 💡 This is built over 2 years with a lot of trail and error by getting live on day 0 and improving it on the way. Not the usual FAANG way. 😉
+
+
+**Ways to deploy**
+
+1. **Vercel/Netlify** : A drag & drop way.
+2. Auto-Scale as load increases, but on **native machines** (without using containerization) : It’s like renting a computer say AWS EC2 and running an application.
+3. **Containerized**/**Dockerized** and deployed natively (without Kubernetes/terraform) : It’s like putting everything in a box and then running it.
+4. Using **Terraform** (Managing cloud via code), **Kubernetes** (Docker Management Tool)
+
+[bookmark](https://youtu.be/Gjnup-PuquQ)
+
+
+[bookmark](https://youtu.be/PziYflu8cB8)
+
+
+[bookmark](https://youtu.be/tomUWcQ0P3k)
+
+
+**Two pipelines incurring cost** : Transcoding(60%) and Distribution(40%)
+
+
+**AWS Services used**
+
+1. **S3** : To Store the videos
+2. **Elastic** : Run transcoding
+
+## How apps are deployed
+
+
+---
+
+
+> 💡 Frontend & Backend are deployed separately. 
+
+
+It is because **frontend** files are usually `index.html`, `script.js`, `style.css` or even if there is a framework like React, Next, Vue etc. In the end, it will spit out these files.
+
+
+Frontends typically deployed in `CDN` (**Content Delivery Network**), which is a network/collection of servers present around the globe, these servers are called `POP` (**Point of Presence**), upon the request the nearest POP handles it. **Netlify/Vercel** is an example of same.
+
+
+Another **popular use case** of `CDN` is delivering video content. As requesting a YouTube video hosted in the USA from India wouldn’t make sense. So the nearest POP typically server that.
+
+
+> ⚠️ Do note : When we push content to a CDN, it is deployed to specific POPs rather than all of them. The CDN dynamically caches the content based on regional demand and traffic.
+
+
+But **backends** can’t be deployed to CDN, because content is dynamic/different/change as per the user request. In short, CDNs are best for static content, not for dynamic content. So dedicated servers are required.
+
+
+Ways to deploy
+
+1. **Repl.it** : A “jugad”/makeshift. Will cost nothing.
+2. **Serverless** : Paying as per requests. [fly.io](http://fly.io/) or Firebase Functions.
+3. **AWS/GCP** : Renting a server, thus a fixed-cost will incur regardless of use.
+
+> ⚠️ Full stacks are easy to deploy, but transcoders are usually a little complex.
+
+
+## Understanding Video Apps
+
+
+---
+
+
+**Requirements**
+
+
+1. User can upload a video up to 4 GB. 
+
+
+2. Once the video is uploaded, it should be transcoded to many formats like 480p, 720p etc.
+
+
+3. Students should be given the option to choose a quality to save bandwidth.
+
+
+4. Should be able to handle 10000 videos/day.
+
+
+5. Should do it in a cost-effective.
+
+
+> 💡 Transcoding is like creating 480p, 720p etc versions of video. Like we see on YouTube.
+
+
+**Architecture** (Internal Working of transcoder) : Transcoding a video takes around 30 min, performing this on main server, will make our service down, which is not an idea. Thus, it is typically performed on a separate server. This also demonstrate the need of backend talking to backends. As once the video is uploaded to the main server, it should auto inform/request the transcoder server to transcode the video. That is why, sending emails, OTPs etc. are done on separate servers.
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/c89e10e3-db0b-40b3-b76f-0c715bff3b54/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002429Z&X-Amz-Expires=3600&X-Amz-Signature=3a609d26f96a26989143846273a0884cf2d9299fed3b6f43dbe26f66fea38857&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+**How push and pull happens**
+
+
+In a **push-based approach**, the transcoder endpoint is immediately triggered as soon as the video is received on the main server. However, there is a possibility that the transcoder server may miss the request, be busy, or even be down.
+
+
+To address this, a **pull-based approach** is employed, where the transcoder server requests the video when it is available and free to do so. The main server maintains a queue of videos, ensuring a systematic flow and no loss of requests. Below we are using the pull-based approach.
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/c6e59c5a-3b7b-45ef-a941-5616156f9333/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002429Z&X-Amz-Expires=3600&X-Amz-Signature=40fe060883c03557fb208464773e6f35fd205e45306fde58d78e5d5bd0aa5f1a&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+**Response from Main Server**
+
+
+[bookmark](https://gist.github.com/hkirat/25392c336666a6d44d719093c8bec063)
+
+
+```json
+// When video requested from main server
+{
+   "status":200,
+   "data":{
+      "id":"127502",
+      "stream_id":"1084588476",
+      "input_url":"https://a.cloudfront.com/video.mp4",
+   }
+}
+
+// Another endpoint tp check the queue length
+{
+   "status":200,
+   "data":{
+      "queue_length":"5",
+   }
+}
+```
+
+
+**Request sent to main server**
+
+
+[bookmark](https://gist.github.com/hkirat/9ed75aa3fbf0c16f61a741ab1f105ea3)
+
+
+```json
+// When video is transcoded, this is send to main server.
+{
+   "status":200,
+   "data":{
+      "id":"127502",
+      "stream_id":"1084588476",
+      "input_url":"https://a.cloudfront.com/video.mp4",
+      "outputUrls":{
+         "drm":[
+            {
+               "name":"720p",
+               "url":"https://a.cloudfront.com/video_id_123/720p/drm/stream.mpd"
+            },
+            {
+               "name":"480p",
+               "url":"https://a.cloudfront.com/video_id_123/480p/drm/stream.mpd"
+            },
+            {
+               "name":"360p",
+               "url":"https://a.cloudfront.com/video_id_123/360p/drm/stream.mpd"
+            },
+            {
+               "name":"240p",
+               "url":"https://a.cloudfront.com/video_id_123/240p/drm/stream.mpd"
+            }
+         ],
+         "mp4":[
+            {
+               "name":"720p",
+               "url":"https://a.cloudfront.com/video_id_123/720p/drm-hls/master-5000321.108390829.mp4"
+            },
+            {
+               "name":"480p",
+               "url":"https://a.cloudfront.com/video_id_123/480p/drm-hls/master-5000321.108390829.mp4"
+            },
+            {
+               "name":"360p",
+               "url":"https://a.cloudfront.com/video_id_123/360p/drm-hls/master-5000321.108390829.mp4"
+            },
+            {
+               "name":"240p",
+               "url":"https://a.cloudfront.com/video_id_123/240p/drm-hls/master-5000321.108390829.m3u8.m3u8"
+            }
+         ],
+         "encrypted":{
+            "url":"https://a.cloudfront.com/video_id_123/encrypted.mp4",
+            "password":"6142136"
+         },
+         "duration":"3846"
+      },
+   }
+}
+```
+
+
+## How to do it ?
+
+
+---
+
+
+In cloud, we are charged for the amount of time-server is up. So, based on the number of videos in the queue, the number of transcoding servers should auto-scale only for that amount of time. Hence, charge will be only for the time-server is up, not for provisioned/rented server.
+
+
+**Using Lambda** : AWS serverless function, but ideal not for the long-running task like transcoding.
+
+
+**Approach 1** : Bring up a new server for new video, transcode and kill itself.
+
+
+**Approach 2** : Heuristic guess for number of severs. Saves money upon booting time but complex.
+
+
+**Approach 3** : Rent minimum number of servers required all time like for 3 years.
+
+
+**Approach 4** : For mp4 to mp4 conversion, we need only 1 core, but for mp4 to DRM conversion we need 32 cores. So using 32 cores servers for mp4 to mp4 conversion wouldn’t make sense. Create _separate auto-scale groups_. If in future we have 10 types, then 10 groups wouldn’t make sense.
+
+
+**Approach 5** : Containerization, Auto scale and pay per core via Kubernetes (_Cluster will go up upon CPU usage_). The other way is Auto-Scaling group policy, but that may cause random killing.
+
+
+**Approach 6** : GPU at Home as it is not user facing all time.
+
+
+## Advance
+
+
+---
+
+
+[bookmark](https://youtu.be/NQ3fZtyXji0)
+
+
+[bookmark](https://youtu.be/uvb00oaa3k8)
+
+
+**Prometheus** : K8s Monitoring Tool
+
+
+**Libraries for transcoding** : Google FFmpeg, GStreamer
+
+
+**Spot Instance** : Normally, you would pay a fixed price for the computer on an hourly basis. But with EC2 Spot Instances, you have the option to bid for a lower price. Its like trading of EC2
+

@@ -1,0 +1,231 @@
+
+# **React, effects and custom hooks**
+
+
+## Rendering Arrays
+
+
+---
+
+
+**Map** & **Filter** Recap : Returns a new array based on the condition provided.
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/5c12c014-0106-4f0f-b218-bdf4d7aed221/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002341Z&X-Amz-Expires=3600&X-Amz-Signature=c3bfd5aed1789f18e5d5dde9d9a299f87b4fac9f657b93e8836e1494b9d0e19e&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+```javascript
+const numbers = [1, 2, 3, 4, 5];
+
+// Example using map
+const doubledNumbers = numbers.map((number) => number * 2);
+console.log(doubledNumbers); // Output: [2, 4, 6, 8, 10]
+
+// Example using filter
+const evenNumbers = numbers.filter((number) => number % 2 === 0);
+console.log(evenNumbers); // Output: [2, 4]
+```
+
+
+![Source : Link](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/f9717f75-2a58-4bff-ae04-c46311b49871/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002341Z&X-Amz-Expires=3600&X-Amz-Signature=48663ef46df6a9a95853882738c5c2c3475338912c0300608b93109915cb767b&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+**Rendering Multiple Components**
+
+
+In react, if we create an array of components and return it. It autopopulates the components.
+
+
+```javascript
+import { useState } from "react";
+
+function App() {
+
+  const [todos] = useState([
+    {
+      title : "Gym",
+      description : "Hit at 5",
+      id : 1
+    },
+    {
+      title : "Lunch",
+      description : "At 2",
+      id : 2
+    }])
+
+  **return ( todos.map((todo) => {
+    return (
+      <>
+        <h1>Title {todo.title}</h1>
+        <h3>Description {todo.description}</h3>
+        <h6>ID {todo.id}</h6>
+      </>
+    )
+    }))**
+}
+
+export default App
+```
+
+
+```javascript
+// Cleaner and using component child.
+
+import { useState } from "react";
+
+function App() {
+
+  const [todos] = useState([
+    {
+      title : "Gym",
+      description : "Hit at 5",
+      id : 1
+    },
+    {
+      title : "Lunch",
+      description : "At 2",
+      id : 2
+    }])
+
+  return ( todos.map((todo) => {
+    return (
+      <>
+        **<TODO data={todo}></TODO>**
+      </>
+    )
+    }))
+}
+
+**function TODO(props){
+  return(
+    <div>
+      <>
+        <h1>Title {props.data.title}</h1>
+        <h3>Description {props.data.description}</h3>
+        <h6>ID {props.data. id}</h6>
+      </>
+    </div>
+  )
+}**
+
+export default App
+```
+
+
+## Hook
+
+
+---
+
+
+**useState** : It will hook/stick to the first initialized value until its state is updated. General Syntax : `useState( anyValidDataType )` 
+
+
+```javascript
+import { useEffect, useState } from "react";
+
+function App() {
+
+  const [todos, setTodo] = useState({
+    title: "Gym",
+    description: "Hit at 5",
+    id: 1,
+  });
+
+// Rest code is to re-render App
+  const [randomNumber] = useState(Math.random())
+  console.log(randomNumber);
+
+  setTimeout(()=>{
+    setTodo({
+      title: "Updated Gym",
+      description: "Updated Hit at 5",
+      id: 2,
+    })
+  }, 2000)
+
+  return (
+    <>
+      <h1>Title {todos.title}</h1>
+      <h3>Description {todos.description}</h3>
+      <h6>ID {todos.id}</h6>
+    </>
+  );
+}
+
+export default App;
+```
+
+
+**useEffect** : Function inside is guarded, and called only once at first render, not in subsequent renders. General Syntax :  `useEffect( callback, [] )` , second parameter `[]` is an optional array that specifies the dependencies for the effect.
+
+
+```javascript
+import { useEffect, useState } from "react";
+
+function App() {
+
+  const [todos, setTodos] = useState([]); 
+
+  useEffect(() => { 
+    fetch("http://localhost:3000/todos")
+      .then((response) => response.json())
+        .then((data) => setTodos(data))
+      }, [] )
+
+  return (
+    <>
+      <h1>Title {todos.title}</h1>
+      <h3>Description {todos.description}</h3>
+      <h6>ID {todos.id}</h6>
+    </>
+  );
+}
+
+export default App;
+```
+
+
+> ⚠️ Rendering is happening twice because of `Strict Mode`. Note, this only happens in local development environment, not in production.
+
+
+**Custom Hook** : As component naming convention is `PascalCase`, similarly Hook naming convention is to use; `use` before its name. Technically, a function using hooks inside to modularize the code. 
+
+
+```javascript
+import { useEffect, useState } from "react";
+
+// The exact same code is 
+function useTodos() { 
+
+  const [todos, setTodos] = useState([]); 
+
+  useEffect(() => { 
+    fetch("http://localhost:3000/todos")
+      .then((response) => response.json())
+        .then((data) => setTodos(data))
+      }, [] )
+
+  return todos;
+  
+}
+
+function App() {
+
+  const todos = useTodos();
+
+  return (
+    <>
+      <h1>Title {todos.title}</h1>
+      <h3>Description {todos.description}</h3>
+      <h6>ID {todos.id}</h6>
+    </>
+  );
+}
+
+export default App;
+```
+
+
+> 💡 **Web Sockets** is like having a direct phone line between your frontend and the backend Server. The server automatically sends the update to frontend whenever an update happens at backend. As in our case when we were adding more to-dos at the backend, we can take action on these updates in our frontend using Web Sockets, the right way instead of interval, timeout.
+

@@ -1,0 +1,179 @@
+
+# Recapping Basics of JS
+
+
+## Foundation
+
+
+---
+
+
+**Computers understand** 0's and 1s but writing programs in 0s & 1s is tough, so Programming Languages like C++, C, JavaScript were introduced for easier programming. 
+Note : In the end, programming languages are translated into 0s 1s.
+
+
+Programming languages like FORTRAN, BASIC etc. do exist, but only for computers, not for browsers. Thus, emerged the **Language of browser** – JavaScript.
+
+
+**ECMA** International (formally European Computer Manufacturers Association) is a non-profit organization that develops standards in computer hardware, communications, and programming languages. Hence, the **ECMAScript** : Guidelines/Standards for building JavaScript language or Compiler.
+
+
+**List of JS Engines**/Compilers
+
+- Google Chrome – V8
+- Mozilla – SpiderMonkey
+- Safari – JavaScriptCore
+
+Running JS on computer
+
+- **Node.js** is JS ~~Framework~~, ~~Language~~, Runtime, – Uses V8 Engine of Chrome.
+- [**Deno.land**](http://deno.land/) , another **TS** and **JS** runtime built on V8. Uses **Rust** as its core language. It was created by **Ryan Dahl**, the creator of Node.js, to fix a long list of inherent problems in Node.js.
+- **Bun**, another JS runtime, instead of V8 it uses **JavaScriptCore** of Apple Safari, core written in **Zig** Language.
+
+> 💡 Runtime is an execution environment in which a program or code is executed. Basically it has everything like libraries etc. needed to run the code like in our case JavaScript. 
+
+
+## JavaScript Basics
+
+
+---
+
+- **Variables** : of which value can change
+- **Loops** : for, while to iterate over arrays, objects.
+
+```javascript
+// Variables with different datatypes
+
+var userName = "Harkirat" // string
+var coursePrice = 5999 // number
+var purchased = true // boolean
+var completeUserData = { // Object(key-value pairs)
+	name : "Harkirat"
+	coursePrice : 5999
+	purchased : true
+}	
+var users = [ "Rookie", "Harkirat" ] // array
+```
+
+- **Functions** : Helps to organize the code and achieve DRY (Don’t Repeat Yourself).
+- **Callback** : When we can pass a function as an argument into another function, usually the last argument. Why ? Helps to achieve below 👇
+
+```javascript
+// From this
+function doArithmetic(firstEl, secondEl, whatToDo) {
+	
+	if(whatToDo === "sum") {
+		var answer = sum(firstEl, secondEl);
+		return answer;
+	}
+
+	if(whatToDo === "multiply") {
+		var answer = multiply(firstEl, secondEl);
+		return answer;
+	}
+
+}
+
+// To this
+function doArithmetic(firstEl, secondEl, funToRun){
+	return funToRun(firstEl, secondEl);
+}
+```
+
+
+## Core Concepts
+
+
+---
+
+
+**JavaScript runs** on browsers and using Node.js, also in backend servers.
+
+
+**Single Threaded** : A processor has multiple cores, and a core is where code runs. Think of cores as number of people, higher the number, more tasks can be completed at once. In JS, despite the more number of cores, say 10, JS runs on a single core only, hence single threaded. Simply putting, _parallel computing is not possible_. 😲 This is why _code runs sequentially_. One after One.
+
+
+> 💡 Think of cores as number of people, higher the number, more tasks can be completed at once. But JS uses only one, hence single threaded.
+
+
+**Synchronous :** Synchronous tasks go in sync like one by one, where each step of the task must complete before the next step can begin. Think of it like people in queue waiting to buy tickets, the next person in line can only buy their ticket once the person ahead of them has completed their purchase. Therefore, a line of code must be finish execution before it moves to the next. Hence, “Blocking” Nature.
+
+
+ 
+
+
+> 💡 Think of it like people in queue waiting to buy tickets. Next person can buy only when ahead of him finished. Hence, synchronous is “Blocking” in nature.
+
+
+**Asynchronous** :  Asynchronous tasks (_Background Tasks_) take time, how much we don’t know. Think of it like parcel will be delivered by today, but not sure what time. CBSE will releaser result today, but not sure what time. Similarly, when we send a http request, a response will be received but don’t know at what time. That is what needs to be run in the background, which is possible via Asynchronous Programming, this allows the program to continue executing other operations or tasks while waiting for the completion of the asynchronous task. . Thus, “Non-Blocking” behaviour enables greater concurrency.
+
+
+> 💡 Think of it like parcel will be delivered by today, CBSE will release result today but not sure what time. Needs to run in background.  Hence, asynchronous is “Non-Blocking” in nature.
+
+
+**Asynchronous Tasks**
+
+	- Keyboard Input in game
+	- Network Requests
+	- File Operations
+	- Database Queries
+
+## Terminology
+
+
+---
+
+
+**Loosely/Weakly Typed** : If I can input **any data type** say string, number, boolean to variable or a parameter passing to a function, then it is loosely typed. Example : **JavaScript**.
+
+
+S**trongly typed** : When I can input only a **specific data type** defined by programmer to a variable or a parameter passing to a function, also what type of data the function should return, then it is strongly typed. Example : **C++**
+
+
+Loosely typed example in JavaScript:
+
+
+```javascript
+// Can put "any type of data" in variable "iAmVariable"
+var iAmVariable = "Harkirat"
+iAmVariable = true
+iAmVariable = 5999
+```
+
+
+Strongly typed example in C++:
+
+
+```c++
+// Can put "only specific type of data" in variable "iAmVariable"
+int iAmVariable = 5999;
+iAmVariable = "Harkirat" // ERROR !!! NOT POSSIBLE, only number
+```
+
+
+**Statically typed** languages check the data types and **look for type errors during compile tim**e. Ex : C++, Java
+
+
+**Dynamically typed** languages check the data types and **look for type errors during runtime**. Ex : JS
+
+
+![Source : Link](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/65b7434a-8fa4-4155-b189-0950fc94c306/static_vs_dynamic_2.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002320Z&X-Amz-Expires=3600&X-Amz-Signature=af95e2a461a02851f498189a5f76bc35682d125fe8539e3c173e71261d0d239b&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+![Source : Link](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/94c5c11b-e107-4376-9074-dcb6b8c83af2/static_vs_dynamic_typing.jpeg?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002320Z&X-Amz-Expires=3600&X-Amz-Signature=fe7e3b5db23a79434f48939e6ce8d94843405da123350e488b62eec44ff40f36&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+**Interpreted Language**: Interpreted languages **keep executing correct code until encounters an incorrect/error-full code**. Example : JavaScript, Python.
+
+
+**Compiled** **Language** :  Compiled languages **require the entire code to be error-free** before running. Example : C++, Java
+
+
+![Source : Link](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/622f605f-57a5-4ea1-83f4-8dc2e4bbf3a5/compile_vs_interpreted.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002320Z&X-Amz-Expires=3600&X-Amz-Signature=5a419387cd3863520711d325b1050017d3983cddab33f6e0a32aa30d90ca5b91&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+- **Native to JS** : Date Object.
+- **APIs** : Runtime environments like Node.js expose APIs such as **fetch**, **setTimeout**, **setInterval**, and **Filesystem**. However, the browser APIs do not include Filesystem, as it would allow access to the entire computer's data.
+- **List of Browser APIs** : fetch, canvas, clipboard, geolocation, setTimeout, setInterval.
+
+> 💡 API : Think of it like ordering food at a restaurant. The menu acts as an API, listing the available dishes you can request. You communicate **your order** (**request**) to the waiter, who takes it to the kitchen. The kitchen processes your order and **prepares the food**, which is then delivered back to you as a **response**.
+

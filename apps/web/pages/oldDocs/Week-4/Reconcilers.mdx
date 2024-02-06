@@ -1,0 +1,221 @@
+
+# Revisiting Reconciler
+
+
+---
+
+
+> ⚠️ This is in reference to the last week assignment, reconciler.
+
+
+**Approach 1** : In _script-ugly,_ remove everything what is already present and add everything what is new. 
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/de06ef2a-55ae-4ecc-b648-6d22e5354982/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002339Z&X-Amz-Expires=3600&X-Amz-Signature=4ffa2c7feee795c7c1f66d15f4c9b5019f55cc95d14504a811f230f4780c5945&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+**Approach 2** : In _script-less-ugly_, calculate the difference and make changes accordingly.
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/06cf7a7f-41fa-4320-9c4e-891036b1c76e/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002339Z&X-Amz-Expires=3600&X-Amz-Signature=8a4a2693bd67bfde47dab054ede47d2f7736a78ae65474a8902cf44959f97704&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+**Approach 3** : In _script-vdom-comparision_, in approach 2 we are fetching complete DOM, which is expensive. So we keep the copy of original DOM in Virtual DOM. Thus, for current state, we refer vDOM instead of fetching original DOM and only diff changes are updated in original DOM. It is usually represented in a tree like structure.
+
+
+![Source : Link](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/827ccb76-05c9-4d83-899d-881aca61a3cc/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002339Z&X-Amz-Expires=3600&X-Amz-Signature=8bb521d82585f37cb7aa04da690435aba2bb029358e997aea243d3b256b4edea&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+**Batch Updates**, one of the optimization features offered by react. When there are multiple state changes in a fraction of seconds. Then those changes are clubbed together & updated at the end.
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/49ea1c93-79f5-4ef8-8012-2382b440db33/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002339Z&X-Amz-Expires=3600&X-Amz-Signature=0ae65e1a564178b5456dd38acf6d2b6168cfe7b300d634b03f85838e708a87c5&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+**Properties/Functions**
+
+1. `Array.from` & `children` :  **children** property returns an HTMLCollection or a NodeList, which are array-like objects, not than actual JavaScript arrays. So we can’t use built-in array methods like forEach(), map(), etc. Thus, to convert it into actual JavaScript Array we use **Array.from**
+
+```javascript
+var currentChildren = Array.from(parentElement.children);
+```
+
+1. `dataset.id` : Each object in the array have so many properties and while creating the to-dos we stored **id** in dataset.
+
+> ⚠️ Instead of this, we can achieve same by using `setAttribute` and `getAttribute`
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/b40c0118-d571-404a-89a5-856b37ae90f2/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002339Z&X-Amz-Expires=3600&X-Amz-Signature=5a86f1d13e5316049abd56c068d977618289f7761e50135e25d2c7efdef62e18&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/c14d4641-1bb8-4a98-b0a6-ca41adb96061/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002339Z&X-Amz-Expires=3600&X-Amz-Signature=e0ae8e553bdba4acb11af837dda07fe709df25dfafae9ab495de290b08c7c288&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+1. `filter` & `find` : The essence of _filter_ and _find_ is to give a boolean condition. Think of this like I am going to see each element one by one if the boolean condition given by you matches, I will return that element in case of `find` and will return all elements in case of `filter`.
+
+![Source : Link](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/52876928-c78f-418a-b895-3e0d0cc6d05f/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002339Z&X-Amz-Expires=3600&X-Amz-Signature=faf753a4d7135de0bb90a5182d19ccb521b294c904da6f61c4fb597e36824093&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+1. These are extra if you are interested.
+
+![Source : Link](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/7918f2dd-0336-4a5e-96bd-63b63e5a4520/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002339Z&X-Amz-Expires=3600&X-Amz-Signature=93d5065c9d2d3920c7d0d2afd10e7fe32b6ea312ead56c4faf76474d90ff8e98&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+> ⛔ `fill` function is illustrated wrong in the diagram.  
+> `fill(val);`  
+> `fill(val, start);`	//fills array with value of val at index start  
+> `fill(val, start, end);` //fills array with value of val at index start to index end
+
+
+	`fill(val);`
+	`fill(val, start);`	//fills array with value of val at index start
+	`fill(val, start, end);` //fills array with value of val at index start to index end
+
+
+## Starting React
+
+
+---
+
+
+> 💡 **Why react** : DOM Operations are expensive and writing code to make modifications are hard for application developer. So we have to React.  
+> If this doesn’t convince you, simply think this will make frontend coding file easier.
+
+
+**Boilerplate Creation Tool** : [Vite](https://vitejs.dev/) and run command `npm create vite@latest`
+
+1. CRP (Create React App) : It is a CRAP 😂
+2. Web Based Tools : [Stackblitz](https://stackblitz.com/), [CodeSandbox](https://codesandbox.io/), [Repl.it](http://repl.it/)
+3. Vite : The Best
+4. **Alternates** : Webpack, gulp, Grunt, Rollup, and Parcel
+
+**State** : It is a special variable/container/data-holder given by react that “Reacts/Responds to the  change in this special variable, state by updating/rendering the corresponding component. 
+Since it is special, not every variable is a state variable. So we have special Syntax.
+
+
+```javascript
+import { useState } from "react";
+
+const [ stateName , setStateName] = useState({ ... }) // Initial Data
+
+setStateName({ ... }) // Updated Data
+```
+
+
+```javascript
+**import { useState } from "react";**
+
+function App() {
+
+  **const [todo, setTodo] = useState({**
+    title : "Gym",
+    description : "Hit at 5",
+    id : 1
+  **})**
+	
+// To mimic the state change after 3s
+  setInterval(() => {
+    **setTodo({**
+      title : "Udpate Gym",
+      description : "Update Hit at 5",
+      id : 1
+    **})**
+  }, 3000)
+
+  return (
+    <>
+      <h1>Title {todo.title}</h1>
+      <h3>Description {todo.description}</h3>
+      <h6>ID {todo.id}</h6>
+    </>
+  )
+}
+
+
+export default App
+```
+
+
+**Component** : Those HTML elements together make a component, a button can be a component, Title, Description, Button together makes component. These are usually inside a function, which is named `Frist Letter Capital` or Pascal Case and `jsx` file allows us to write JavaScript and HTML in single file.
+
+
+```javascript
+// From previous code, this is also a component		
+
+<>
+  <h1>Title {todo.title}</h1>
+  <h3>Description {todo.description}</h3>
+  <h6>ID {todo.id}</h6>
+</>
+```
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/a1648836-f15c-4d72-a951-b50c541eb517/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002339Z&X-Amz-Expires=3600&X-Amz-Signature=74a1f1b19b26697d46ce12d3ea3f66b2dc9f399061cbcec21b8b7d5061b9e258&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+```javascript
+// Above component may look like this.
+
+import React from "react";
+
+function Card({ imageSrc, description, buttonText }) {
+  return (
+    <div className="card">
+      <img src={imageSrc}/>
+      <div className="card-content">
+        <p className="card-description">{description}</p>
+        <button className="card-button">{buttonText}</button>
+      </div>
+    </div>
+  );
+}
+
+export default Card;
+```
+
+
+**Props** : The term "prop" itself is short for "property”. Passing the state/data from one component to another/child component. 
+
+
+```javascript
+import { useState } from "react";
+
+function App() {
+
+  const [todo, setTodo] = useState({
+    title : "Gym",
+    description : "Hit at 5",
+    id : 1
+  })
+
+  setInterval(() => {
+    setTodo({
+      title : "Udpate Gym",
+      description : "Update Hit at 5",
+      id : 1
+    })
+  }, 3000)
+
+  return (
+    <>
+      <h1>Title {todo.title}</h1>
+      <h3>Description {todo.description}</h3>
+      <h6>ID {todo.id}</h6>
+      **<MyButton eyeD={todo}></MyButton>**
+    </>
+  )
+}
+
+**// Child Component**
+function MyButton(props){
+  return(
+    <div>
+      <button>{props.eyeD.title}</button>
+    </div>
+  )
+}
+
+export default App
+```
+
+
+> 💡 As the state changes, the component is rendered.
+

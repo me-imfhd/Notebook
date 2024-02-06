@@ -1,0 +1,128 @@
+
+## Monorepos
+
+
+---
+
+
+**Mono** stands for “_single_” and **repo** is short of “_repository_”. When we put codebase of Web App, Mobile App and Backend Server all in single repository/folder. It is called **Monorepo**.
+
+
+> 💡 Monorepo - Multiple apps in one repository.
+
+
+![Source : Link](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/3013a0e3-d228-4f9a-921e-ccacb7dc4f5b/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002401Z&X-Amz-Expires=3600&X-Amz-Signature=b573512e8277fa07b540e5288a87f4e99cbd4cfc9498e21e4c6d151b855a63b5&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+[bookmark](https://youtu.be/9iU_IE6vnJ8)
+
+
+## Why modules/packages ?
+
+
+---
+
+- Re-usable code
+- Isolation/Separation of concern
+- Teams can work on modules independently
+
+## Zod
+
+
+---
+
+
+`Zod` - A library to perform backend and frontend validation. 
+
+
+To perform frontend validation, we use `Zod Inference`, which is automatically creates “type” out of Zod Object.
+
+
+```typescript
+// Creating Zod Object - Using this we can do the backend validation.
+const signupInput = z.object({
+	username: z.string(),
+	password: z.string()
+})
+```
+
+
+```typescript
+// Creating type out of object for frontend validation
+type signupParams = z.infer<typeof signupInput>;
+
+
+
+```
+
+
+```typescript
+// Similar to this
+type signupParams = {
+	username : string,
+	password : string
+}
+```
+
+
+> ⚠️ Every folder (like in class these were common, client, server) must have package.json and tsconfig.
+
+<details>
+<summary>Why can’t we directly import the file from common ?</summary>
+
+On compilation typescript, complains file is outside of `src` folder.
+
+
+</details>
+
+
+## Publish NPM Package
+
+
+---
+
+
+> 🔥 Pre Monorepo era, we publish the package to npm and then npm install. There wasn’t intercommunication of packages.
+
+
+Commands used
+
+- `npm login`
+- `npm publish --access=publish`
+- `npm pack` – Creates a zip file of what is going to be published.
+- `.npmignore` – To avoid publishing some folders.
+- `npm version major/minor/patch` – This is a pretty cool thing, Read Semantic Versioning.
+
+> ⚠️ You can’t publish over the previous, version.
+
+
+As mentioned, it is not the good practice to ship complete typescript code. But to reuse/use package we need the “_types declaration_”. So we have `d.ts` file, which can be generated adding `declaration: true` in tsconfig.
+
+
+> 💡 `.d.ts`  = No JavaScript Logic code, only “_types declaration_”
+
+
+## Mono Repos
+
+
+---
+
+
+Publishing the package to `npm` and then importing it. Sucks !! It is complete ugly way. So we have Mono Repos, again, to make our life easier.
+
+
+Three workarounds to handle the mono repos, in better way.
+
+- `turborepo` : The most popular build system for JS and TS codebases. This jargon is good.
+- `lerna` :
+- `npm workspaces` :
+
+**The answer you are looking for** 👇🏻
+
+
+If you are thinking, why are we making this all complex and overwhelming. It is not, it simply looks.
+
+So far the application you have built/thought is `todo`, people working on it is `only you`, and number of users is `1`. But real life applications are opposite, they are `complex`, a `team works`, a `million` users. When developers were in the way of it, there were problems and this is the solution.
+
+If you carefully see, these are just a bunch of folders and files here and there. Just to manage code.
+

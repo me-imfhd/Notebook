@@ -1,0 +1,203 @@
+
+# File structuring of Backend
+
+
+---
+
+
+A single file makes **spaghetti**, so we make separate file and folders.
+
+- `/db` :  Contains the Schema and exports the variables
+
+```javascript
+// In index.js
+const { User, Course, Admin } = require("../db")
+
+// In db
+module.exports = {
+	User,
+	Course,
+	Admin
+}
+```
+
+- `/middleware` : Contains secret, authenticateJWT
+
+```javascript
+// In index.js
+const { User, Course, Admin } = require("../db")
+
+// In db
+module.exports = {
+	authenticateJwt,
+	SECRET
+}
+```
+
+- `/routes` : Conversion from `app.{get/post/put}` to `router.{get/post/put}`
+
+```javascript
+// In index.js
+const adminRouter = require("./routes/admin")
+app.use("/admin", adminRouter)
+
+// In admin.js
+const router = express.Router()
+router.{post/get/put}('/login', callback)
+module.exports = router
+```
+
+- `index.js` : Contains essential imports, middlewares, routers, connection to mongoose.
+
+> 💡 General Metric, File > 100 Lines of Code, must be broken down.
+
+
+## Object Destructuring
+
+
+---
+
+
+A cool way to extract properties from an object and assign them to individual variables in single line.
+
+
+```javascript
+// Define an object
+const person = {
+  firstName: 'John',
+  lastName: 'Doe',
+  age: 30,
+  city: 'New York'
+};
+
+// Destructure the object
+**const { firstName, lastName, age, city } = person;**
+
+// Access the destructured variables
+console.log(firstName); // Output: John
+console.log(lastName);  // Output: Doe
+console.log(age);       // Output: 30
+console.log(city);      // Output: New York
+```
+
+
+## Axios vs fetch 
+
+
+---
+
+
+**Fetch** : Internal Library, in-built support.
+
+
+**Axios** : External Library, needs to be installed.
+
+
+> 💡 Simply a cleaner way to write requests, under the hood axios uses `fetch`.
+
+
+**POST - Example**
+
+
+```javascript
+// Axios
+axios.post('https://api.example.com/data', { name: 'John', age: 25 })
+  .then(response => console.log(response.data))
+  .catch(error => console.error(error));
+
+//Fetch
+fetch('https://api.example.com/data', {
+  method: 'POST',
+  body: JSON.stringify({ name: 'John', age: 25 }),
+  headers: {
+    'Content-Type': 'application/json'
+  }
+})
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error => console.error(error));
+```
+
+
+**GET - Example**
+
+
+```javascript
+// Axios
+axios.get('https://api.example.com/data')
+  .then(response => console.log(response.data))
+  .catch(error => console.error(error))
+
+// Fetch
+fetch('https://api.example.com/data')
+  .then(response => response.json())
+  .then(data => console.log(data))
+  .catch(error =>console.error(error))
+```
+
+
+![Source : Link](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/30ed6201-f465-47aa-85b5-6e1d9930516d/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002346Z&X-Amz-Expires=3600&X-Amz-Signature=fe1dfcfba201171c6c72da4349eca3d0fa8c7e3dfd4d540a002715d2fe624338&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+## Async Await
+
+
+---
+
+
+ **`async`** and **`await`** keywords are used with asynchronous code and make it appear synchronous
+
+
+```javascript
+// Await/Async
+const func = async () => {
+	const response = await axios.post('url', body);
+	let data = response.data;
+}
+
+// Promise
+const func = () => {
+	axios.post('url', body)
+	.then(callback)
+}
+```
+
+
+```javascript
+// Another Example
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function fetchData() {
+  console.log('Fetching data...');
+  await delay(2000); // Pause execution for 2 seconds
+  console.log('Data fetched!');
+  
+  return 'Data';
+}
+
+fetchData();
+```
+
+
+> ⚠️ `await` keyword can only be inside `async` function.
+
+
+This was covered previously in this as well. [Auth and Database](https://www.notion.so/6a19033486e543ca83a9c992fe81542f) 
+
+
+## Grids in MUI
+
+
+---
+
+
+`Flexbox` and `Grid` are CSS Layout Techniques. Way to arrange/put Components on screen. YouTube video is the best way to understand both.
+
+
+![Source : Link](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/e7e2197b-ec91-4fe3-b240-8c26a25d9f19/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002346Z&X-Amz-Expires=3600&X-Amz-Signature=4a228af0b12bacacfff04167687dc16daf0c1d19a72c27a53b74e64367f942e8&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+> ⚠️ useEffect doesn’t allow using the async function. So we use `.then` syntax to work around.
+

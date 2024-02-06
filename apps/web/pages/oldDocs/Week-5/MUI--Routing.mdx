@@ -1,0 +1,257 @@
+
+## Designing Components
+
+
+---
+
+
+> 💡 Some Alpha, for hiring mobile engineers, 8000 Impressions, 100 Emails, 2 Interviews. This filtrating took 10 seconds. _Live projects made selection, not resumes_.
+
+
+**Components** : Collection of HTML tags abstracted/kept inside a function. **Props** : Way to send data from one component to another. 
+
+
+```javascript
+// To write components in separate file, say Signup
+function Signup(){
+	...
+}
+
+export default Signup;
+
+// and Import where want to use.
+import Signup from "./Signup.jsx"
+```
+
+
+**Material UI** : The default styling of components is ugly, either we can write own CSS, or use existing libraries where components are pre-styled. One of which is [Material UI](https://mui.com/)
+
+
+```javascript
+// Install
+npm install @mui/material @emotion/react @emotion/style
+```
+
+
+```javascript
+// Import
+import Button from '@mui/material/Button';
+
+// Use
+<Button variant="contained">Hello World</Button>
+```
+
+
+**Changing Font** 
+
+
+```javascript
+// Add font CDN to index.html, Mandatory
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap" rel="stylesheet">
+```
+
+
+**Changing Font in** _**individual component**_
+
+
+```javascript
+// Inside particular component
+
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+	typography: {
+	  fontFamily: 'Poppins, sans-serif', // Replace with your desired font
+	},
+});
+
+function Signup() {
+  return (
+	<ThemeProvider theme={theme}>
+    ...
+   </ThemeProvider>
+  );
+}
+```
+
+
+**Changing font in** _**all Components**_
+
+
+```javascript
+**// Inside App.jsx**
+
+import React from 'react';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+const theme = createTheme({
+  typography: {
+    fontFamily: 'Poppins, sans-serif', // Replace with your desired font
+  },
+});
+
+
+function App() {
+  return (
+    <ThemeProvider theme={theme}>
+       {/* Your components */}
+    </ThemeProvider>
+  );
+}
+
+export default App;
+```
+
+
+**Login-In Component**
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/80c5ef55-98af-454d-bc86-21f8738878b6/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002343Z&X-Amz-Expires=3600&X-Amz-Signature=179347eab757e7b85fdf58bffdcfbe11fe28f8eedc03202c143ce83efaef7c9f&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+```javascript
+import { Box, FormControl, TextField, Button, Typography } from '@mui/material';
+
+function Login() {
+  return (
+      <Box display="flex" flexDirection="column" justifyContent="center" alignItems="center" height="100vh" backgroundColor="#ffffff">
+        <Typography variant="h6" component="h6" gutterBottom> Login </Typography>
+        <FormControl>
+          <TextField fullWidth label="Email" variant="outlined" margin="normal" sx={{ marginBottom: '1rem' }} />
+          <TextField fullWidth label="Password" variant="outlined" margin="normal" sx={{ marginTop: '0rem', marginBottom: '1rem' }} />
+          <Button variant="contained" size="large"> Submit </Button>
+        </FormControl>
+      </Box>
+  );
+}
+
+export default Login;
+```
+
+
+> ⚠️ **`sx`** prop, overrides directly component's property. Instead of writing inline styles.
+
+
+**Header Component**
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/11352de9-ed83-4a76-b54e-60fa29289a29/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002343Z&X-Amz-Expires=3600&X-Amz-Signature=d481a10975f91a3d8d500d78ff9f7d10b3455c18ca0fad56262dfaaa89ad9dab&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+```javascript
+import { AppBar, Box, Toolbar, Typography, Button } from '@mui/material';
+
+export default function Header() {
+  return (
+    <Box>
+      <AppBar position="static">
+        <Toolbar>
+          <Typography variant="h6" component="h6" sx={{ flexGrow: 1 }}>Coursera</Typography>
+          <Button color="inherit">Login</Button>
+          <Button color="inherit">Signup</Button>
+        </Toolbar>
+      </AppBar>
+    </Box>
+  );
+}
+```
+
+
+## Routing
+
+
+---
+
+
+```javascript
+// Install & Import in App.JSX
+import { BrowserRouter as Router, Routes, Route} from 'react-router-dom';
+
+// Here's how to add the Route.
+function App() {
+
+  return (
+    <ThemeProvider theme={theme}>
+      <Header></Header>
+      <Router>
+        <Routes>
+            <Route path="/login" element={<Login/>}></Route>
+            <Route path="/signup" element={<Signup/>}></Route>
+        </Routes>
+      </Router>
+    </ThemeProvider>
+    
+  )
+}
+```
+
+
+**UGLY Approach** : window.location
+
+
+```javascript
+// The UGLY WAY - Reloads the complete page
+window.location = '/login'
+```
+
+
+> ⚠️ **Why double curly brackets** : Props are passed inside `{ … }`, so if it is a string type, then `{"string"}`, if it is an object, then `{{ flexGrow: 1 }}` that is why two brackets.
+
+
+**Correct Approach** : No Refresh
+
+
+```javascript
+import {useNavigate} from 'react-router-dom';
+
+const navigate = useNavigate();
+
+const login = () => navigate('/login')
+const signup = () => navigate('/signup')
+
+**// ⚠️ Make sure Appbar/Header is inside the <Router></Router>**
+```
+
+
+## Sending Request to Backend
+
+
+---
+
+
+**UGLY Way** : getElementById 
+
+
+```javascript
+// Add this function to onClick Event of Button
+
+const sendData = () => {
+    let username = document.getElementById('username').value;
+    let password = document.getElementById('password').value;
+    fetch('http://localhost:3000/admin/signup',{
+      method : "POST",
+      body: JSON.stringify({username, password}),
+      headers: {"Content-type" : "application/json"}
+    }).then((response) => response.json())
+    .then((data) => localStorage.setItem("token", data.token))
+  }
+```
+
+
+**Correct Way** : State Management
+
+
+```javascript
+const [username, setUsername] = useState('');
+const [password, setPassword] = useState('');
+
+// Add this function to onChange Event of Input Fields
+const usernameHandler = e => setUsername(e.target.value);
+const passwordHandler = e => setPassword(e.target.value);
+
+// Then send the corresponding request.
+```
+
+
+> ⚠️ To store the data in local storage `localStorage.setItem( "key", data.token)` and to get the value `localStorage.getItem( "key" )` 
+

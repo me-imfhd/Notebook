@@ -1,0 +1,168 @@
+
+# Resources
+
+
+---
+
+
+[bookmark](https://slides.com/mltechindiamltechindia/week-11-1/)
+
+
+# Overview
+
+
+---
+
+
+Quick Recap of 10 weeks, we have enough constructs to build a variety of projects/websites with **Language** - JS/TS/HTML/CSS, **Backend** - Express/Node.js, **Frontend** - React/Next.JS, and **Deployment**.
+
+
+> 💡 **Mindset** : Learn enough to get started and then build something and learn on the way.
+
+
+Tech-stack of most of open source projects.
+
+1. **Turborepo** for MonoRepo
+2. **NextJS** - Frontend + Backend
+3. **Typescript** Language.
+
+Why **Mono repos** ?
+
+
+We usually have many apps like admin dashboard, client dashboard, docs and this gives us ability to share components, code across various apps. Keeping all the code in single repository.
+
+
+Components usually shared
+
+- **UI Components** like Signup, Buttons, Input etc Design System.
+- **Recoil’s Atoms** like user/LoggedIn person’s atom.
+- **Backend Logic** like to generate tokens.
+
+> 💡 Main goal is end apps should be very lean and all code should be in packages.
+
+
+# Internal Packages
+
+
+---
+
+
+To facilitate package sharing and enhance code reusability across apps, one way to go about it is by publishing packages on the `NPM Registry`. However, at NPM Registry, you can only **share compiled/dist/build/js code**.
+
+
+`TurboRepo/MonoRepo` provides a feature that allows you to share **uncompiled/ts/unbundled code**, which can be quite handy in cases where you'd rather avoid publishing the package on NPM.
+
+
+> 💡 You can also identify an internal package by verifying the absence of a "build" command within its `package.json` file.
+
+
+When using it inside an for an application like `web` , Internal packages are must be listed in  `transpilePackages` so these can be compiled at app level.
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/efb2e694-4516-4982-abe0-84785a477586/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002422Z&X-Amz-Expires=3600&X-Amz-Signature=47628b7c483cdbf96a3dfb3670d5903dcf5abd1e4889f0624bd6d96563caa3d4&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+# Project
+
+
+---
+
+
+### **Init turborepo**
+
+
+Official Documentation to Link - [turbo.build](https://turbo.build/repo/docs/getting-started/create-new)
+
+
+```bash
+npx create-turbo@latest
+sudo npx create-turbo@latest # if got permission error in mac
+```
+
+
+Run `npm install` at root level, this will install dependencies globally or at app level as well.
+
+
+**Fix 1** : Permission denied on performing `npm install`
+
+
+```bash
+sudo npm install
+sudo chmod -R 777 <folder> # To permanently get rid of this error.
+```
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/8346c298-eb39-4e39-bc22-2e0a980e5ac8/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002422Z&X-Amz-Expires=3600&X-Amz-Signature=e1ad917cdf81c40ebe738938c79a8f2e705ac8056c0bf7a1fad372f798207a29&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+### **Overview of folders**
+
+
+Two pre-build NextJS apps; `web` and `app`
+
+
+![In video, this is the web app](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/61d1c934-0ff3-4403-839f-4c0cddffba18/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002423Z&X-Amz-Expires=3600&X-Amz-Signature=7c1c1152e95b170bd4eb46ddf3469e324e37e35edc93cdd2e65c74434ea5aa3c&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+![This is what you may see.](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/b1da4e90-b3f3-4435-8d6b-731aebded41c/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002424Z&X-Amz-Expires=3600&X-Amz-Signature=94cf96a0d1d0af2e3d7c7391f7d2c120edd709f9d53fd24f20c767d60c86b9e6&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+When creating custom internal package, two files are important.
+
+1. **package.json** : `“main” : “index.tsx”` & `“types” : “./index.tsx”`
+2. `index.tsx` main export file of each package, sort of an entry point for all other imports.
+
+Global `ts configurations` are stored in `tsconfig` folder which can be extended and local to each app.
+
+
+### **Add a nextjs app with the page route in TS**
+
+
+To create another app, go Inside the `apps` folder run the command `npx create-next-app@latest`
+
+
+![Untitled.png](https://prod-files-secure.s3.us-west-2.amazonaws.com/dd624914-6876-4b58-9694-424f7aa5e22a/218eb70d-3cc4-4d69-bcfc-a3877d358b8a/Untitled.png?X-Amz-Algorithm=AWS4-HMAC-SHA256&X-Amz-Content-Sha256=UNSIGNED-PAYLOAD&X-Amz-Credential=AKIAT73L2G45HZZMZUHI%2F20240206%2Fus-west-2%2Fs3%2Faws4_request&X-Amz-Date=20240206T002422Z&X-Amz-Expires=3600&X-Amz-Signature=d9d22dc9564106124d48cd6df5a5bf126fc2ecb061207ed0ebd216869b301815&X-Amz-SignedHeaders=host&x-id=GetObject)
+
+
+> 💡 Reverse search in terminal `Ctrl`/`Cmd` + R
+
+
+### Adding **ui an internal package**
+
+1. In `package.json` add `"ui": "*”` as dependency
+2. In `next.config.js` add `transpilePackages: [”ui”]`
+3. At root level run `npm install dev`
+
+### Exporting components from ui
+
+
+Can export in following way
+
+
+```bash
+export { Card } from "./card";
+export { SignUp } from "./components/Signup";
+export * from "./components/Signup";
+```
+
+
+In separate folder `components` , can have `index.tsx`
+
+
+Install mui (react dependency will complain) - an opportunity for an open source contribution
+
+
+Put a simple signup/signin component (npm i from top)
+
+
+Start adding backend, create a new db module (internal?)
+
+
+Where should db.connect be? Cache it in a file of its own
+
+
+Connect fe to be (notice no cors?)
+
+
+Introduce store as a new module, transpile it Introduce components folder for appbar
+
